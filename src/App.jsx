@@ -13,6 +13,7 @@ function App() {
   const [globeSize, setGlobeSize] = useState({ width: 800, height: 600 })
   const [iss, setIss] = useState([])
   const [earthquakes, setEarthquakes] = useState([])
+  const [issTrail, setIssTrail] = useState([])
 
   const events = [
     {
@@ -52,19 +53,21 @@ function App() {
 
 
   const [satellites, setSatellites] = useState([])
-
 useEffect(() => {
   const fetchISS = async () => {
     try {
-      const response = await fetch('https://api.wheretheiss.at/v1/satellites/25544')
+      const response = await fetch(
+        'https://api.wheretheiss.at/v1/satellites/25544'
+      )
+
       const data = await response.json()
 
       setIss([
         {
           lat: data.latitude,
           lng: data.longitude,
-          size: 1.2,
-          color: '#ffffff',
+          size: 2,
+          color: '#00e5ff',
           title: 'International Space Station',
           type: 'Space Object',
           location: 'Low Earth Orbit',
@@ -72,6 +75,19 @@ useEffect(() => {
           time: 'Live'
         }
       ])
+
+      setIssTrail(prev => {
+        const updated = [
+          ...prev,
+          {
+            lat: data.latitude,
+            lng: data.longitude
+          }
+        ]
+
+        return updated.slice(-80)
+      })
+
     } catch (error) {
       console.log('ISS data error:', error)
     }
@@ -83,7 +99,6 @@ useEffect(() => {
 
   return () => clearInterval(interval)
 }, [])
-
 useEffect(() => {
   const fetchEarthquakes = async () => {
     try {
@@ -302,6 +317,19 @@ useEffect(() => {
             const material = new THREE.MeshBasicMaterial({ color: '#d0d0d0' })
             return new THREE.Mesh(geometry, material)
           }}
+pathsData={[
+  {
+    points: issTrail
+  }
+]}
+pathPoints="points"
+pathPointLat="lat"
+pathPointLng="lng"
+pathColor={() => "#ffffff"}
+pathStroke={0.8}
+pathDashLength={0.4}
+pathDashGap={0.1}
+pathDashAnimateTime={4000}
         />
 
         {selectedEvent && (
