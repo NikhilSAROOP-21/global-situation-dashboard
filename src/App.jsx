@@ -5,6 +5,9 @@ import * as THREE from 'three'
 import './App.css'
 import * as satellite from 'satellite.js'
 
+  const CLOUDFLARE_RADAR_TOKEN = ''
+  const BGP_API_TOKEN = ''
+
 function App() {
   const globeRef = useRef()
   const containerRef = useRef()
@@ -13,10 +16,9 @@ function App() {
   const [globeSize, setGlobeSize] = useState({ width: 800, height: 600 })
   const [iss, setIss] = useState([])
   const [earthquakes, setEarthquakes] = useState([])
-  const [issTrail, setIssTrail] = useState([])
+//  const [issTrail, setIssTrail] = useState([])
   const [spaceWeather, setSpaceWeather] = useState(null)
   const [satellites, setSatellites] = useState([])
-  const [activeFilter, setActiveFilter] = useState('All')
   const [weatherAlerts, setWeatherAlerts] = useState([])
   const [globalAlerts, setGlobalAlerts] = useState([])
   const [volcanoes, setVolcanoes] = useState([])
@@ -24,7 +26,61 @@ function App() {
   const [kevAlerts, setKevAlerts] = useState([])
   const [internetOutages, setInternetOutages] = useState([])
   const [bgpAlerts, setBgpAlerts] = useState([])
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [selectedFilters, setSelectedFilters] = useState([
+  'All',
+  'Earthquake',
+  'Volcano',
+  'Weather Alert',
+  'Space Object',
+  'Internet Outage',
+  'CVE',
+  'Cyber Alert',
+  'BGP Hijack',
+  'Ransomware',
+  'Data Breach',
+  'Threat Intel'
   
+])
+  const [issCrew, setIssCrew] = useState({ number: 0, people: [] })
+  const issLiveData = useRef({ speed: 0, altitude: 0 })
+  const [ransomwareAlerts, setRansomwareAlerts] = useState([])
+  const [breachAlerts, setBreachAlerts] = useState([])
+  const [threatIntelAlerts, setThreatIntelAlerts] = useState([])
+
+
+const filterOptions = [
+  'Earthquake',
+  'Volcano',
+  'Weather Alert',
+  'Space Object',
+  'Internet Outage',
+  'CVE',
+  'Cyber Alert',
+  'BGP Hijack',
+  'Ransomware',
+  'Data Breach',
+  'Threat Intel'
+]
+
+const toggleFilter = (filter) => {
+  if (filter === 'All') {
+    setSelectedFilters(
+      selectedFilters.includes('All') ? [] : ['All', ...filterOptions]
+    )
+    return
+  }
+
+  let updatedFilters = selectedFilters.includes(filter)
+    ? selectedFilters.filter(item => item !== filter && item !== 'All')
+    : [...selectedFilters.filter(item => item !== 'All'), filter]
+
+  if (updatedFilters.length === filterOptions.length) {
+    updatedFilters = ['All', ...filterOptions]
+  }
+
+  setSelectedFilters(updatedFilters)
+}
 
   const events = [
     {
@@ -97,37 +153,37 @@ function App() {
     let tleInterval = null
     let updateInterval = null
 
-    const fetchTLE = async () => {
-      try {
-        const res = await fetch('/tle')
-        const text = await res.text()
-        if (text.includes('25544')) {
-          const lines = text.trim().split('\n')
-          if (lines.length >= 3) {
-            const newSatrec = satellite.twoline2satrec(lines[1].trim(), lines[2].trim())
-            if (newSatrec && !newSatrec.error) {
-              satrec = newSatrec
-              localStorage.setItem('iss_tle', text)
-              localStorage.setItem('iss_tle_time', Date.now())
-              console.log('TLE loaded from proxy')
-              return
-            }
-          }
-        }
-      } catch (e) {
-        console.log('Proxy failed, trying cache')
-      }
-
-      const cachedTLE = localStorage.getItem('iss_tle')
-      if (cachedTLE) {
-        const lines = cachedTLE.trim().split('\n')
+const fetchTLE = async () => {
+  try {
+    const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544/tles?format=text')
+    const text = await res.text()
+    if (text.includes('25544')) {
+      const lines = text.trim().split('\n')
+      if (lines.length >= 3) {
         const newSatrec = satellite.twoline2satrec(lines[1].trim(), lines[2].trim())
         if (newSatrec && !newSatrec.error) {
           satrec = newSatrec
-          console.log('TLE loaded from cache')
+          localStorage.setItem('iss_tle', text)
+          localStorage.setItem('iss_tle_time', Date.now())
+          console.log('TLE loaded from wheretheiss.at')
+          return
         }
       }
     }
+  } catch (e) {
+    console.log('TLE fetch failed, trying cache')
+  }
+
+  const cachedTLE = localStorage.getItem('iss_tle')
+  if (cachedTLE) {
+    const lines = cachedTLE.trim().split('\n')
+    const newSatrec = satellite.twoline2satrec(lines[1].trim(), lines[2].trim())
+    if (newSatrec && !newSatrec.error) {
+      satrec = newSatrec
+      console.log('TLE loaded from cache')
+    }
+  }
+}
 
 const updateISS = () => {
   if (!satrec) return
@@ -149,27 +205,45 @@ const updateISS = () => {
     if (!fpv.position) continue
     const fgmst = satellite.gstime(futureDate)
     const fgeo = satellite.eciToGeodetic(fpv.position, fgmst)
-    orbitDots.push({
-      lat: satellite.degreesLat(fgeo.latitude),
-      lng: satellite.degreesLong(fgeo.longitude),
-      size: 0.15,
-      color: '#00e5ff',
-      title: 'ISS Orbit Path',
-      isOrbitDot: true
-    })
+    const orbitLat = satellite.degreesLat(fgeo.latitude)
+const orbitLng = satellite.degreesLong(fgeo.longitude)
+
+if (Number.isFinite(orbitLat) && Number.isFinite(orbitLng)) {
+  orbitDots.push({
+    lat: orbitLat,
+    lng: orbitLng,
+    size: 0.15,
+    color: '#00e5ff',
+    title: 'ISS Orbit Path',
+    type: 'Space Object',
+    isOrbitDot: true
+  })
+}
   }
 
   setIss([{
-    lat, lng, size: 2, color: '#00e5ff',
+    lat,
+    lng,
+    size: 0.8,
+    color: '#00ffff',
     title: 'International Space Station',
     type: 'Space Object',
-    location: 'Low Earth Orbit',
-    details: `Position: ${lat.toFixed(2)}°, ${lng.toFixed(2)}°`,
+    location: `Low Earth Orbit (${issLiveData.current.altitude.toFixed(0)} km)`,
+
+    details: `Ground Point:
+  ${lat.toFixed(2)}° ${lat >= 0 ? 'North' : 'South'} ${Math.abs(lng).toFixed(2)}° ${lng >= 0 ? 'East' : 'West'}
+
+  Orbital Speed:
+  ${issLiveData.current.speed.toFixed(0)} km/h
+  ${(issLiveData.current.speed / 3.6).toFixed(0)} m/s
+
+  Altitude:
+  ${issLiveData.current.altitude.toFixed(1)} km`,
+
     time: 'Live',
     isOrbitDot: false
   }, ...orbitDots])
 
-  setIssTrail([])
 }
 
     const handleVisibility = () => {
@@ -355,7 +429,8 @@ useEffect(() => {
   const fetchKEV = async () => {
     try {
       const response = await fetch(
-        'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'
+        'https://corsproxy.io/?https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'
+
       )
 
       const data = await response.json()
@@ -393,61 +468,107 @@ Known Exploited Vulnerability`,
 }, [])
 
 useEffect(() => {
-  const sampleOutages = [
-    {
-      lat: 40.7128,
-      lng: -74.006,
-      size: 0.6,
-      color: '#b000ff',
-      title: 'Network Disruption',
-      type: 'Internet Outage',
-      location: 'New York, USA',
-      details: 'Possible regional connectivity disruption detected.',
-      time: 'Simulated'
-    },
-    {
-      lat: 51.5072,
-      lng: -0.1276,
-      size: 0.6,
-      color: '#b000ff',
-      title: 'Service Degradation',
-      type: 'Internet Outage',
-      location: 'London, UK',
-      details: 'Network performance degradation reported.',
-      time: 'Simulated'
-    }
-  ]
+  const fetchInternetOutages = async () => {
+    try {
+      if (!CLOUDFLARE_RADAR_TOKEN) {
+        console.log('Cloudflare Radar token missing')
+        setInternetOutages([])
+        return
+      }
 
-  setInternetOutages(sampleOutages)
+      const response = await fetch(
+        'https://api.cloudflare.com/client/v4/radar/annotations/outages',
+        {
+          headers: {
+            Authorization: `Bearer ${CLOUDFLARE_RADAR_TOKEN}`
+          }
+        }
+      )
+
+      const data = await response.json()
+
+      const outages = data.result.annotations.slice(0, 25).map((outage) => ({
+        lat: 20 + (Math.random() - 0.5) * 120,
+        lng: 0 + (Math.random() - 0.5) * 300,
+        size: 0.7,
+        color: '#b000ff',
+        title: outage.description || 'Internet Outage',
+        type: 'Internet Outage',
+        location: outage.scope || 'Global',
+        details: `Cause: ${outage.cause || 'Unknown'}
+
+Status: ${outage.status || 'Unknown'}
+
+Start: ${outage.startDate || 'Unknown'}
+
+End: ${outage.endDate || 'Ongoing'}
+
+Source: Cloudflare Radar`,
+        time: outage.startDate || 'Live'
+      }))
+
+      setInternetOutages(outages)
+    } catch (error) {
+      console.log('Internet outage feed error:', error)
+    }
+  }
+
+  fetchInternetOutages()
+
+  const interval = setInterval(fetchInternetOutages, 300000)
+
+  return () => clearInterval(interval)
 }, [])
 
 useEffect(() => {
-  const sampleBGPAlerts = [
-    {
-      lat: 52.52,
-      lng: 13.405,
-      size: 0.7,
-      color: '#ff00ff',
-      title: 'Possible BGP Route Leak',
-      type: 'BGP Hijack',
-      location: 'Berlin, Germany',
-      details: 'Possible abnormal route announcement detected.',
-      time: 'Simulated'
-    },
-    {
-      lat: 1.3521,
-      lng: 103.8198,
-      size: 0.7,
-      color: '#ff00ff',
-      title: 'Suspicious AS Path Change',
-      type: 'BGP Hijack',
-      location: 'Singapore',
-      details: 'Potential routing anomaly affecting regional traffic.',
-      time: 'Simulated'
-    }
-  ]
+  const fetchBGPAlerts = async () => {
+    try {
+      if (!BGP_API_TOKEN) {
+        console.log('BGP API token missing')
+        setBgpAlerts([])
+        return
+      }
 
-  setBgpAlerts(sampleBGPAlerts)
+      const response = await fetch(
+        'https://api.bgpview.io/events',
+        {
+          headers: {
+            Authorization: `Bearer ${BGP_API_TOKEN}`
+          }
+        }
+      )
+
+      const data = await response.json()
+
+      const alerts = data.data.slice(0, 25).map((event) => ({
+        lat: 20 + (Math.random() - 0.5) * 120,
+        lng: 0 + (Math.random() - 0.5) * 300,
+        size: 0.7,
+        color: '#ff00ff',
+        title: event.name || 'BGP Routing Event',
+        type: 'BGP Hijack',
+        location: event.country || 'Global Routing System',
+        details: `Event Type: ${event.type || 'Unknown'}
+
+ASN: ${event.asn || 'Unknown'}
+
+Description: ${event.description || 'No description available'}
+
+Source: BGPView`,
+        time: event.time || 'Live'
+      }))
+
+      setBgpAlerts(alerts)
+    } catch (error) {
+      console.log('BGP feed error:', error)
+    }
+  }
+
+  fetchBGPAlerts()
+
+  const interval = setInterval(fetchBGPAlerts, 300000)
+
+  return () => clearInterval(interval)
 }, [])
 
   useEffect(() => {
@@ -565,6 +686,149 @@ useEffect(() => {
     }
   }, [])
 
+  useEffect(() => {
+  const fetchCrew = async () => {
+    try {
+      const res = await fetch('https://corsproxy.io/?http://api.open-notify.org/astros.json')
+      const data = await res.json()
+      const issOnly = data.people.filter(p => p.craft === 'ISS')
+      setIssCrew({ number: issOnly.length, people: issOnly })
+    } catch (e) {
+      console.log('Crew fetch error:', e)
+    }
+  }
+  fetchCrew()
+  const interval = setInterval(fetchCrew, 3600000)
+  return () => clearInterval(interval)
+}, [])
+
+useEffect(() => {
+  const fetchLiveStats = async () => {
+    try {
+      const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544')
+      const data = await res.json()
+      issLiveData.current = {
+        speed: data.velocity,
+        altitude: data.altitude
+      }
+    } catch (e) {
+      console.log('Live stats error:', e)
+    }
+  }
+  fetchLiveStats()
+  const interval = setInterval(fetchLiveStats, 5000)
+  return () => clearInterval(interval)
+}, [])
+
+useEffect(() => {
+  const fetchRansomwareAlerts = async () => {
+    try {
+      const response = await fetch(
+        'https://api.ransomware.live/v2/recentvictims'
+      )
+
+      const data = await response.json()
+
+      const alerts = data.slice(0, 25).map((victim, index) => ({
+        lat: 20 + (Math.random() - 0.5) * 120,
+        lng: 0 + (Math.random() - 0.5) * 300,
+        size: 0.8,
+        color: '#ff0055',
+        title: victim.victim || 'Ransomware Victim',
+        type: 'Ransomware',
+        location: victim.country || 'Unknown',
+        details: `Group: ${victim.group || 'Unknown'}
+
+Sector: ${victim.activity || 'Unknown'}
+
+Discovered: ${victim.discovered || victim.published || 'Unknown'}
+
+Source: Ransomware.live`,
+        time: victim.discovered || victim.published || 'Live'
+      }))
+
+      setRansomwareAlerts(alerts)
+    } catch (error) {
+      console.log('Ransomware feed error:', error)
+    }
+  }
+
+  fetchRansomwareAlerts()
+
+  const interval = setInterval(fetchRansomwareAlerts, 300000)
+
+  return () => clearInterval(interval)
+}, [])
+
+useEffect(() => {
+  const fetchBreaches = async () => {
+    try {
+      const response = await fetch(
+        'https://haveibeenpwned.com/api/v3/breaches'
+      )
+
+      const data = await response.json()
+
+      const breaches = data.slice(0, 25).map((breach) => ({
+        lat: 37.7749 + (Math.random() - 0.5) * 40,
+        lng: -95.7129 + (Math.random() - 0.5) * 100,
+        size: 0.75,
+        color: '#ff6600',
+        title: breach.Name,
+        type: 'Data Breach',
+        location: breach.Domain,
+        details: `${breach.Description}
+
+Records: ${breach.PwnCount.toLocaleString()}
+
+Data Classes:
+${breach.DataClasses.slice(0, 5).join(', ')}`,
+        time: breach.BreachDate
+      }))
+
+      setBreachAlerts(breaches)
+    } catch (error) {
+      console.log('Breach feed error:', error)
+    }
+  }
+
+  fetchBreaches()
+}, [])
+
+useEffect(() => {
+  const fetchThreatIntel = async () => {
+    try {
+      const response = await fetch(
+        'https://www.cisa.gov/sites/default/files/feeds/cybersecurity-advisories.json'
+      )
+
+      const data = await response.json()
+
+      const alerts = data.items.slice(0, 25).map((item) => ({
+        lat: 38.8977 + (Math.random() - 0.5) * 20,
+        lng: -77.0365 + (Math.random() - 0.5) * 20,
+        size: 0.75,
+        color: '#00ffaa',
+        title: item.title,
+        type: 'Threat Intel',
+        location: 'CISA Advisory',
+        details: item.description || item.title,
+        time: item.pubDate || 'Live'
+      }))
+
+      setThreatIntelAlerts(alerts)
+    } catch (error) {
+      console.log('Threat Intel feed error:', error)
+    }
+  }
+
+  fetchThreatIntel()
+
+  const interval = setInterval(fetchThreatIntel, 300000)
+
+  return () => clearInterval(interval)
+}, [])
+
   const selectEvent = (event) => {
     setSelectedEvent(event)
     if (globeRef.current) {
@@ -577,61 +841,78 @@ useEffect(() => {
     }
   }
 
-const filteredEvents =
-  activeFilter === 'All'
-    ? events
-    : events.filter((event) => event.type === activeFilter)
 
-const filteredEarthquakes =
-  activeFilter === 'All' || activeFilter === 'Earthquake'
-    ? earthquakes
-    : []
+const isVisible = (type) => selectedFilters.includes(type)
 
-const filteredISS =
-  activeFilter === 'All' || activeFilter === 'Space Object'
-    ? iss
-    : []
+const filteredEvents = events.filter(event =>
+  isVisible(event.type)
+)
+
+const filteredEarthquakes = isVisible('Earthquake')
+  ? earthquakes
+  : []
+
+const filteredISS = isVisible('Space Object')
+  ? iss
+  : []
 
 const allGlobePoints = [
   ...filteredEvents,
   ...filteredEarthquakes,
   ...filteredISS,
-  ...globalAlerts,
-  ...volcanoes,
-  ...cves,
-  ...kevAlerts,
-  ...internetOutages,
-  ...bgpAlerts
+  ...(isVisible('Weather Alert') ? globalAlerts : []),
+  ...(isVisible('Volcano') ? volcanoes : []),
+  ...(isVisible('CVE') ? cves : []),
+  ...(isVisible('Cyber Alert') ? kevAlerts : []),
+  ...(isVisible('Internet Outage') ? internetOutages : []),
+  ...(isVisible('BGP Hijack') ? bgpAlerts : []),
+  ...(isVisible('Ransomware') ? ransomwareAlerts : []),
+  ...(isVisible('Threat Intel') ? threatIntelAlerts : [])
 ]
-
 
 
   return (
     <div className="dashboard">
       <aside className="panel leftPanel">
         <h2>LIVE EVENTS</h2>
-        <div className="filterBar">
-          { [
-  'All',
-  'Earthquake',
-  'Volcano',
-  'Weather Alert',
-  'Space Object',
-  'Internet Outage',
-  'CVE',
-  'Cyber Alert',
-  'BGP Hijack',
+<div className="filterDropdown">
+  <button
+    className="filterDropdownButton"
+    onClick={() => setFiltersOpen(!filtersOpen)}
+  >
+    All Events
+    <span>{filtersOpen ? '▲' : '▼'}</span>
+  </button>
 
-].map(filter => (
-            <button
-              key={filter}
-              className={activeFilter === filter ? 'activeFilter' : ''}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
+  {filtersOpen && (
+    <div className="filterGrid">
+      <button
+        className={
+          selectedFilters.includes('All')
+            ? 'filterCard active'
+            : 'filterCard'
+        }
+        onClick={() => toggleFilter('All')}
+      >
+        All
+      </button>
+
+      {filterOptions.map(filter => (
+        <button
+          key={filter}
+          className={
+            selectedFilters.includes(filter)
+              ? 'filterCard active'
+              : 'filterCard'
+          }
+          onClick={() => toggleFilter(filter)}
+        >
+          {filter}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
 
 <div className="sectionTitle">CYBER</div>
 
@@ -693,6 +974,42 @@ const allGlobePoints = [
   ))}
 </div>
 
+<div className="sectionTitle">RANSOMWARE</div>
+
+<div className="scrollList">
+  {ransomwareAlerts.slice(0, 10).map((event, index) => (
+    <div
+      className="card clickable"
+      key={index}
+      onClick={() => selectEvent(event)}
+      style={{
+        borderLeft: '4px solid #ff0055'
+      }}
+    >
+      <strong>{event.title}</strong>
+      <span>{event.location}</span>
+    </div>
+  ))}
+</div>
+
+<div className="sectionTitle">THREAT INTEL</div>
+
+<div className="scrollList">
+  {threatIntelAlerts.slice(0, 10).map((event, index) => (
+    <div
+      className="card clickable"
+      key={index}
+      onClick={() => selectEvent(event)}
+      style={{
+        borderLeft: '4px solid #00ffaa'
+      }}
+    >
+      <strong>{event.title}</strong>
+      <span>{event.location}</span>
+    </div>
+  ))}
+</div>
+
         <div className="sectionTitle">GENERAL</div>
         {filteredEvents.map((event, index) => (
           <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
@@ -741,23 +1058,24 @@ const allGlobePoints = [
           polygonSideColor={() => 'rgba(0,0,0,0)'}
           polygonStrokeColor={() => '#707070'}
           polygonAltitude={0.001}
-/*
-          pathsData={issTrail}
-          pathPoints={d => d.points}
-          pathPointLat={p => p.lat}
-          pathPointLng={p => p.lng}
+
+ /*         pathsData={issTrail}
+          pathPoints={(d) => d.points || []}
+          pathPointLat={(p) => p.lat}
+          pathPointLng={(p) => p.lng}
           pathColor={() => '#00e5ff'}
           pathStroke={1.5}
           pathDashLength={0.03}
           pathDashGap={0.02}
           pathDashAnimateTime={4000}
-          pathAltitude={0.05}
+          pathAltitude={0.08}
 */
           pointsData={allGlobePoints}
           pointLat="lat"
           pointLng="lng"
           pointColor="color"
-          pointAltitude={(point) => point.isOrbitDot ? 0.06 : 0.035}
+          pointAltitude={(point) => point.isOrbitDot ? 0.05 : 0.035}
+          
           pointRadius="size"
           pointLabel="title"
           onPointClick={(point) => {
@@ -789,7 +1107,24 @@ const allGlobePoints = [
             <p><strong>Type:</strong> {selectedEvent.type}</p>
             <p><strong>Location:</strong> {selectedEvent.location}</p>
             <p><strong>Time:</strong> {selectedEvent.time}</p>
-            <p>{selectedEvent.details}</p>
+            <p style={{ whiteSpace: 'pre-line' }}>
+  {selectedEvent.details}
+</p>
+
+{selectedEvent.title === 'International Space Station' && (
+  <div style={{ marginTop: '10px', borderTop: '1px solid #444', paddingTop: '10px' }}>
+    <p><strong>Crew aboard: {issCrew.number} members</strong></p>
+
+    {issCrew.people.map((person, i) => (
+      <p
+        key={i}
+        style={{ color: '#aaa', fontSize: '12px', margin: '2px 0' }}
+      >
+        👨‍🚀 {person.name}
+      </p>
+    ))}
+  </div>
+)}
           </div>
         )}
       </main>
@@ -805,7 +1140,23 @@ const allGlobePoints = [
               <span>{selectedEvent.type}</span>
               <span>{selectedEvent.location}</span>
               <span>{selectedEvent.time}</span>
-              <p>{selectedEvent.details}</p>
+              <p style={{ whiteSpace: 'pre-line' }}>
+  {selectedEvent.details}
+</p>
+              {selectedEvent.title === 'International Space Station' && (
+  <div style={{ marginTop: '10px', borderTop: '1px solid #444', paddingTop: '10px' }}>
+    <p><strong>Crew aboard: {issCrew.number} members</strong></p>
+
+    {issCrew.people.map((person, i) => (
+      <p
+        key={i}
+        style={{ color: '#aaa', fontSize: '12px', margin: '2px 0' }}
+      >
+        👨‍🚀 {person.name} ({person.craft})
+      </p>
+    ))}
+  </div>
+)}
             </div>
             <button
               className="clearButton"

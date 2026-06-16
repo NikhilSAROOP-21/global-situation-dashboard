@@ -135,6 +135,8 @@ h2 {
   color: #ccc;
   font-size: 13px;
   line-height: 1.5;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .clearButton {
@@ -148,4 +150,76 @@ h2 {
 
 .clearButton:hover {
   border-color: #aaa;
+}
+
+.filterDropdown {
+  margin-bottom: 18px;
+}
+
+.filterDropdownButton {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(15, 25, 40, 0.95);
+  border: 1px solid #2f80ff;
+  color: #ffffff;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(47, 128, 255, 0.25);
+}
+
+.filterGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.filterCard {
+  padding: 12px 10px;
+  border-radius: 10px;
+  background: rgba(120, 120, 120, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #8f98a6;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.filterCard.active {
+  background: rgba(47, 128, 255, 0.28);
+  border-color: #2f80ff;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(47, 128, 255, 0.45);
+}
+
+.filterCard:hover {
+  color: #ffffff;
+  border-color: #2f80ff;
+  transform: translateY(-1px);
+}
+
+.popup {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 12px;
+}
+
+.popup::-webkit-scrollbar {
+  width: 6px;
+}
+
+.popup::-webkit-scrollbar-thumb {
+  background: #00e5ff;
+  border-radius: 10px;
+}
+
+.popup::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
 }
