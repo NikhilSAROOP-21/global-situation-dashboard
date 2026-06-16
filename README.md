@@ -1,83 +1,204 @@
 # Global Situation Dashboard
 
-An open-source real-time intelligence, cyber threat, disaster monitoring, and situational awareness platform built with React, Vite, Three.js, React Globe GL, and Satellite.js.
+A real-time open-source intelligence, cyber threat, disaster monitoring, and space situational awareness platform built with React, Vite, Three.js, React Globe GL, and Satellite.js.
 
-The dashboard provides a centralized operational picture of global events through an interactive 3D globe, live intelligence feeds, cyber threat monitoring, disaster intelligence, network awareness, and space situational awareness.
+The platform provides a centralized operational picture of global events through an interactive 3D globe, live intelligence feeds, cyber threat monitoring, disaster awareness systems, network intelligence, and space operations tracking.
 
 ---
 
 ## Features
 
-### Interactive 3D Globe
+### Global Intelligence Globe
 
-* Real-time 3D Earth visualization
+* Interactive 3D Earth visualization
 * Automatic globe rotation
+* Country border rendering
 * Click-and-drag navigation
 * Zoom controls
-* Country border rendering
-* Dynamic event markers
+* Real-time event markers
 * Event auto-focus and tracking
 * Multi-domain intelligence visualization
-* Live event correlation display
+* Dynamic filtering system
 
-### Space Situational Awareness
+---
 
-* Live International Space Station (ISS) tracking
-* Real-time orbital calculations using TLE data
-* ISS orbital path visualization
-* Live ISS altitude monitoring
-* Live ISS velocity monitoring
-* Ground-track positioning
+## Space Domain
+
+### International Space Station (ISS)
+
+* Live ISS tracking
+* Real-time orbital calculations
+* TLE-based orbit propagation
+* Ground position tracking
+* Orbital velocity monitoring
+* Altitude monitoring
 * ISS crew monitoring
-* Space weather monitoring (NOAA KP Index)
-* Simulated Starlink constellation visualization
+* Live crew count
+* Crew member listing
+* Automatic ISS updates
 
-### Earth & Disaster Monitoring
+### Space Weather
+
+* NOAA KP Index monitoring
+* Geomagnetic storm monitoring
+* Solar activity awareness
+* Space weather operational status
+
+### Satellite Visualization
+
+* Simulated Starlink constellation
+* Orbital object visualization
+* Space situational awareness display
+
+---
+
+## Earth Domain
+
+### Earthquake Monitoring
 
 * Live USGS earthquake feed
-* Earthquake severity visualization
-* NASA EONET volcano monitoring
-* GDACS global disaster alerts
-* Worldwide weather and hazard alerts
-* Global event visualization
+* Magnitude visualization
+* Depth reporting
+* Global earthquake tracking
 
-### Cyber Threat Intelligence
+### Volcano Monitoring
+
+* NASA EONET active volcano feed
+* Active eruption monitoring
+* Global volcanic activity awareness
+
+### Disaster Intelligence
+
+* GDACS global disaster alerts
+* Worldwide disaster monitoring
+* Emergency event visualization
+
+### Weather Alerts
+
+* Active weather warnings
+* Severe weather monitoring
+* Global alert visualization
+
+---
+
+## Cyber Threat Intelligence
+
+### Vulnerability Intelligence
 
 * Live NVD CVE monitoring
 * CVSS severity scoring
-* Known Exploited Vulnerabilities (KEV) monitoring
-* Threat intelligence feeds
+* Critical vulnerability identification
+* Top threat detection
+
+### Known Exploited Vulnerabilities
+
+* CISA KEV monitoring
+* Actively exploited vulnerability tracking
+* High-priority threat awareness
+
+### Threat Intelligence
+
+* Threat intelligence feed integration
+* Advisory monitoring
+* Cyber threat event tracking
+
+### Ransomware Monitoring
+
+* Ransomware.live integration
+* Victim tracking
 * Ransomware incident monitoring
-* Cyber alert categorization
-* Threat severity visualization
-* Intelligence summary statistics
+* Campaign awareness
 
-### Network Intelligence
+### Data Breach Monitoring
 
-* Internet outage monitoring framework
+* Public breach intelligence
+* Breach event tracking
+* Records exposure awareness
+* Breach timeline monitoring
+
+---
+
+## Network Intelligence
+
+### Internet Outage Monitoring
+
+* Network outage monitoring framework
+* Regional disruption awareness
+* Connectivity event tracking
+
+### BGP Monitoring
+
 * BGP anomaly monitoring framework
-* Routing event visualization
-* Network disruption awareness
+* Routing event awareness
+* Route hijack monitoring foundation
 
-### Intelligence Operations
+---
+
+## Intelligence Operations
+
+### Event Management
 
 * Clickable event markers
 * Event detail panels
-* Dynamic event filtering
-* Threat categorization
-* Feed health monitoring
+* Auto-focus event tracking
+* Cross-domain intelligence display
+
+### Intelligence Summary
+
+Real-time intelligence overview:
+
 * Active event counter
-* Intelligence summary dashboard
-* Real-time situational awareness display
+* Earthquake count
+* Volcano count
+* CVE count
+* KEV count
+* Ransomware count
+* Threat intelligence count
+* Data breach count
+* Network event count
 
-### Dashboard Interface
+### Feed Health Monitoring
 
-* Dark intelligence-dashboard theme
-* Responsive layout
-* Scrollable intelligence panels
-* Sticky event filtering system
-* Operational command-center design
-* Mission-control inspired interface
+Operational status monitoring for:
+
+* Space Weather
+* ISS Tracking
+* Earthquakes
+* Volcanoes
+* CVE Feed
+* KEV Feed
+* Threat Intelligence Feed
+* Ransomware Feed
+* Data Breach Feed
+* Internet Outage Feed
+* BGP Monitoring Feed
+
+### Top Threat Analysis
+
+Automatically identifies:
+
+* Highest severity CVE
+* Critical vulnerabilities
+* Most significant cyber threat
+* Priority intelligence target
+
+### Global Risk Assessment
+
+Dynamic global threat level calculation:
+
+* LOW
+* ELEVATED
+* HIGH
+* CRITICAL
+
+Based on:
+
+* Critical CVEs
+* Active KEVs
+* Ransomware activity
+* Data breaches
+* Threat intelligence alerts
+* Network events
 
 ---
 
@@ -90,21 +211,20 @@ The dashboard provides a centralized operational picture of global events throug
 * React Globe GL
 * Three.js
 
-### Geospatial & Orbital Processing
+### Geospatial Processing
 
 * TopoJSON
+* GeoJSON
+
+### Orbital Processing
+
 * Satellite.js
+* TLE propagation
 
 ### State Management
 
 * React Hooks
 * Real-time polling architecture
-
-### Development Tools
-
-* Git
-* GitHub
-* ESLint
 
 ---
 
@@ -112,99 +232,29 @@ The dashboard provides a centralized operational picture of global events throug
 
 ### Space
 
-* WhereTheISS.at API
-* Open Notify API
+* WhereTheISS.at
+* Open Notify
 * NOAA Space Weather Prediction Center
-* Satellite.js Orbital Propagation
 
-### Earth & Disaster Intelligence
+### Earth & Disaster
 
 * USGS Earthquake Feed
 * NASA EONET
-* GDACS Global Disaster Alert System
-* Weather.gov Alerts API
+* GDACS
+* Weather.gov
 
 ### Cyber Intelligence
 
 * NVD CVE API
-* CISA Known Exploited Vulnerabilities Feed
+* CISA KEV Feed
 * Ransomware.live
+* Threat Intelligence Feeds
+* Public Breach Intelligence Sources
 
 ### Network Intelligence
 
-* Internet outage monitoring framework
-* BGP monitoring framework
-
----
-
-## Current Monitoring Domains
-
-### Space Domain
-
-* International Space Station (ISS)
-* Orbital prediction
-* Crew monitoring
-* Orbital velocity tracking
-* Altitude tracking
-* Space weather monitoring
-* Satellite visualization
-
-### Earth Domain
-
-* Earthquakes
-* Volcanoes
-* Weather alerts
-* Disaster alerts
-
-### Cyber Domain
-
-* CVE monitoring
-* Known exploited vulnerabilities
-* Threat intelligence
-* Ransomware monitoring
-* Cyber alerts
-
-### Network Domain
-
-* Internet outages
-* BGP anomalies
-* Routing events
-
----
-
-## Dashboard Intelligence Features
-
-### Active Event Counter
-
-Provides a live count of all monitored events across every domain.
-
-### Feed Health Monitoring
-
-Real-time operational status monitoring of all intelligence feeds:
-
-* Space Weather
-* Earthquakes
-* Volcanoes
-* ISS Tracking
-* CVE Feed
-* KEV Feed
-* Threat Intelligence
-* Ransomware
-* Internet Outages
-* BGP Monitoring
-
-### Intelligence Summary
-
-Aggregated operational overview showing:
-
-* Earthquake count
-* Volcano count
-* CVE count
-* KEV count
-* Ransomware incidents
-* Threat intelligence alerts
-* Internet outage events
-* BGP events
+* Internet Outage Monitoring Framework
+* BGP Monitoring Framework
 
 ---
 
@@ -216,19 +266,13 @@ Clone the repository:
 git clone https://github.com/YOUR_USERNAME/global-situation-dashboard.git
 ```
 
-Navigate into the project:
-
-```bash
-cd global-situation-dashboard
-```
-
 Install dependencies:
 
 ```bash
 npm install
 ```
 
-Start the development server:
+Start development server:
 
 ```bash
 npm run dev
@@ -246,56 +290,54 @@ http://localhost:5173
 
 ### Phase 1 ✅
 
-* [x] Interactive globe
-* [x] Country borders
-* [x] Event markers
-* [x] Live earthquake feed
-* [x] Live ISS tracking
-* [x] Event details panel
+* [x] Interactive Globe
+* [x] Country Borders
+* [x] Event Markers
+* [x] Live Earthquake Feed
+* [x] Live ISS Tracking
+* [x] Event Details Panel
 
 ### Phase 2 ✅
 
-* [x] Space weather monitoring
-* [x] ISS orbital path visualization
-* [x] Event filtering
-* [x] Weather alerts
-* [x] Volcano monitoring
-* [x] ISS crew monitoring
-* [x] Feed health monitoring
-* [x] Intelligence summary panel
+* [x] Space Weather Monitoring
+* [x] ISS Orbital Calculations
+* [x] Weather Alerts
+* [x] Volcano Monitoring
+* [x] Event Filtering
+* [x] ISS Crew Monitoring
 
-### Phase 3 🚧
+### Phase 3 ✅
 
-* [x] CVE monitoring
+* [x] CVE Monitoring
 * [x] Known Exploited Vulnerabilities (KEV)
-* [x] Threat intelligence framework
-* [x] Ransomware monitoring
-* [x] Internet outage framework
-* [x] BGP monitoring framework
-* [ ] Data breach monitoring
-* [ ] Real-time network telemetry
-* [ ] Threat correlation engine
+* [x] Threat Intelligence Monitoring
+* [x] Ransomware Monitoring
+* [x] Data Breach Monitoring
+* [x] Global Risk Assessment
+* [x] Feed Health Monitoring
+* [x] Top Threat Analysis
+* [x] Intelligence Summary Dashboard
 
-### Phase 4
+### Phase 4 🚧
 
-* [ ] Docker deployment
-* [ ] User-configurable dashboards
-* [ ] Multi-user support
-* [ ] Historical event playback
-* [ ] Alert subscriptions
-* [ ] Event correlation engine
-* [ ] Global risk assessment
+* [ ] Threat Timeline
+* [ ] Event Correlation Engine
+* [ ] Historical Event Playback
+* [ ] Alert Subscriptions
+* [ ] Docker Deployment
+* [ ] User-Configurable Dashboards
+* [ ] Multi-User Support
 
 ### Phase 5
 
-* [ ] Aircraft tracking
-* [ ] Maritime tracking
-* [ ] Wildfire monitoring
-* [ ] Conflict monitoring
-* [ ] AI-assisted event classification
-* [ ] Automated threat assessment
-* [ ] Predictive intelligence models
-* [ ] Geopolitical intelligence feeds
+* [ ] Aircraft Tracking
+* [ ] Maritime Tracking
+* [ ] Wildfire Monitoring
+* [ ] Conflict Monitoring
+* [ ] AI-Assisted Event Classification
+* [ ] Automated Threat Assessment
+* [ ] Predictive Intelligence Models
+* [ ] Geopolitical Intelligence Monitoring
 
 ---
 
