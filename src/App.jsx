@@ -20,6 +20,11 @@ function App() {
   const [weatherAlerts, setWeatherAlerts] = useState([])
   const [globalAlerts, setGlobalAlerts] = useState([])
   const [volcanoes, setVolcanoes] = useState([])
+  const [cves, setCves] = useState([])
+  const [kevAlerts, setKevAlerts] = useState([])
+  const [internetOutages, setInternetOutages] = useState([])
+  const [bgpAlerts, setBgpAlerts] = useState([])
+  
 
   const events = [
     {
@@ -295,6 +300,156 @@ useEffect(() => {
   return () => clearInterval(interval)
 }, [])
 
+useEffect(() => {
+  const fetchCVEs = async () => {
+    try {
+      const now = new Date()
+      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+
+      const pubStartDate = yesterday.toISOString()
+      const pubEndDate = now.toISOString()
+
+      const response = await fetch(
+        `https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=${pubStartDate}&pubEndDate=${pubEndDate}&resultsPerPage=20`
+      )
+
+      const data = await response.json()
+
+      const cveEvents = data.vulnerabilities.map((item) => {
+        const cve = item.cve
+        const metrics = cve.metrics?.cvssMetricV31?.[0] || cve.metrics?.cvssMetricV30?.[0]
+        const score = metrics?.cvssData?.baseScore || 0
+        const severity = metrics?.cvssData?.baseSeverity || 'UNKNOWN'
+
+        return {
+          lat: 37.7749,
+          lng: -122.4194,
+          size: score >= 9 ? 0.7 : score >= 7 ? 0.55 : 0.4,
+          color: score >= 9 ? '#ff0033' : score >= 7 ? '#ff8800' : '#ffee00',
+          title: cve.id,
+          type: 'CVE',
+          location: 'Cyber Intelligence',
+          details:
+  `Severity: ${severity}
+CVSS Score: ${score}
+
+${cve.descriptions?.[0]?.value || 'No description available'}`,
+          time: cve.published
+        }
+      })
+
+      setCves(cveEvents)
+    } catch (error) {
+      console.log('CVE data error:', error)
+    }
+  }
+
+  fetchCVEs()
+
+  const interval = setInterval(fetchCVEs, 300000)
+
+  return () => clearInterval(interval)
+}, [])
+
+useEffect(() => {
+  const fetchKEV = async () => {
+    try {
+      const response = await fetch(
+        'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'
+      )
+
+      const data = await response.json()
+
+      const alerts = data.vulnerabilities
+        .slice(0, 25)
+        .map((vuln, index) => ({
+          lat: 38.8977 + (Math.random() - 0.5) * 8,
+          lng: -77.0365 + (Math.random() - 0.5) * 8,
+          size: 0.9,
+          color: '#ff0000',
+          title: vuln.cveID,
+          type: 'Cyber Alert',
+          location: vuln.vendorProject,
+          details:
+            `${vuln.product}
+
+${vuln.shortDescription}
+
+Known Exploited Vulnerability`,
+          time: vuln.dateAdded
+        }))
+
+      setKevAlerts(alerts)
+    } catch (error) {
+      console.log('KEV error:', error)
+    }
+  }
+
+  fetchKEV()
+
+  const interval = setInterval(fetchKEV, 3600000)
+
+  return () => clearInterval(interval)
+}, [])
+
+useEffect(() => {
+  const sampleOutages = [
+    {
+      lat: 40.7128,
+      lng: -74.006,
+      size: 0.6,
+      color: '#b000ff',
+      title: 'Network Disruption',
+      type: 'Internet Outage',
+      location: 'New York, USA',
+      details: 'Possible regional connectivity disruption detected.',
+      time: 'Simulated'
+    },
+    {
+      lat: 51.5072,
+      lng: -0.1276,
+      size: 0.6,
+      color: '#b000ff',
+      title: 'Service Degradation',
+      type: 'Internet Outage',
+      location: 'London, UK',
+      details: 'Network performance degradation reported.',
+      time: 'Simulated'
+    }
+  ]
+
+  setInternetOutages(sampleOutages)
+}, [])
+
+useEffect(() => {
+  const sampleBGPAlerts = [
+    {
+      lat: 52.52,
+      lng: 13.405,
+      size: 0.7,
+      color: '#ff00ff',
+      title: 'Possible BGP Route Leak',
+      type: 'BGP Hijack',
+      location: 'Berlin, Germany',
+      details: 'Possible abnormal route announcement detected.',
+      time: 'Simulated'
+    },
+    {
+      lat: 1.3521,
+      lng: 103.8198,
+      size: 0.7,
+      color: '#ff00ff',
+      title: 'Suspicious AS Path Change',
+      type: 'BGP Hijack',
+      location: 'Singapore',
+      details: 'Potential routing anomaly affecting regional traffic.',
+      time: 'Simulated'
+    }
+  ]
+
+  setBgpAlerts(sampleBGPAlerts)
+}, [])
+
   useEffect(() => {
   const fetchWeatherAlerts = async () => {
     try {
@@ -437,7 +592,17 @@ const filteredISS =
     ? iss
     : []
 
-const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredISS]
+const allGlobePoints = [
+  ...filteredEvents,
+  ...filteredEarthquakes,
+  ...filteredISS,
+  ...globalAlerts,
+  ...volcanoes,
+  ...cves,
+  ...kevAlerts,
+  ...internetOutages,
+  ...bgpAlerts
+]
 
 
 
@@ -446,7 +611,18 @@ const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredIS
       <aside className="panel leftPanel">
         <h2>LIVE EVENTS</h2>
         <div className="filterBar">
-          { ['All', 'Earthquake', 'Space Object', 'Internet Outage', 'Local Alert', 'Weather Alert', 'Volcano'].map(filter => (
+          { [
+  'All',
+  'Earthquake',
+  'Volcano',
+  'Weather Alert',
+  'Space Object',
+  'Internet Outage',
+  'CVE',
+  'Cyber Alert',
+  'BGP Hijack',
+
+].map(filter => (
             <button
               key={filter}
               className={activeFilter === filter ? 'activeFilter' : ''}
@@ -456,6 +632,67 @@ const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredIS
             </button>
           ))}
         </div>
+
+<div className="sectionTitle">CYBER</div>
+
+<div className="scrollList">
+  {cves.slice(0, 10).map((event, index) => (
+    <div
+      className="card clickable"
+      key={index}
+      onClick={() => selectEvent(event)}
+      style={{
+        borderLeft: `4px solid ${
+          event.color
+        }`
+      }}
+    >
+      <strong>{event.title}</strong>
+      <span>{event.type}</span>
+    </div>
+  ))}
+</div>
+
+<div className="sectionTitle">KNOWN EXPLOITED</div>
+
+<div className="scrollList">
+  {kevAlerts.slice(0, 10).map((event, index) => (
+    <div
+      className="card clickable"
+      key={index}
+      onClick={() => selectEvent(event)}
+      style={{
+        borderLeft: '4px solid #ff0000'
+      }}
+    >
+      <strong>{event.title}</strong>
+      <span>{event.location}</span>
+    </div>
+  ))}
+</div>
+
+<div className="sectionTitle">INTERNET OUTAGES</div>
+
+<div className="scrollList">
+  {internetOutages.slice(0, 10).map((event, index) => (
+    <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
+      <strong>{event.title}</strong>
+      <span>{event.location}</span>
+    </div>
+  ))}
+</div>
+
+<div className="sectionTitle">BGP ALERTS</div>
+
+<div className="scrollList">
+  {bgpAlerts.slice(0, 10).map((event, index) => (
+    <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
+      <strong>{event.title}</strong>
+      <span>{event.location}</span>
+    </div>
+  ))}
+</div>
+
         <div className="sectionTitle">GENERAL</div>
         {filteredEvents.map((event, index) => (
           <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
@@ -482,6 +719,9 @@ const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredIS
       <strong>{event.title}</strong>
       <span>{event.time}</span>
     </div>
+
+
+
   ))}
       </aside>
 
@@ -517,7 +757,7 @@ const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredIS
           pointLat="lat"
           pointLng="lng"
           pointColor="color"
-          pointAltitude={0.035}
+          pointAltitude={(point) => point.isOrbitDot ? 0.06 : 0.035}
           pointRadius="size"
           pointLabel="title"
           onPointClick={(point) => {
