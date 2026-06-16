@@ -870,6 +870,39 @@ const allGlobePoints = [
   ...(isVisible('Threat Intel') ? threatIntelAlerts : [])
 ]
 
+const dashboardStats = {
+  earthquakes: earthquakes.length,
+  volcanoes: volcanoes.length,
+  cves: cves.length,
+  kevs: kevAlerts.length,
+  ransomware: ransomwareAlerts.length,
+  threatIntel: threatIntelAlerts.length,
+  outages: internetOutages.length,
+  bgp: bgpAlerts.length
+}
+
+const totalActiveEvents =
+  earthquakes.length +
+  volcanoes.length +
+  cves.length +
+  kevAlerts.length +
+  ransomwareAlerts.length +
+  threatIntelAlerts.length +
+  internetOutages.length +
+  bgpAlerts.length
+
+const feedHealth = {
+  earthquakes: earthquakes.length > 0,
+  volcanoes: volcanoes.length > 0,
+  spaceWeather: !!spaceWeather,
+  iss: iss.length > 0,
+  cves: cves.length > 0,
+  kev: kevAlerts.length > 0,
+  ransomware: ransomwareAlerts.length > 0,
+  threatIntel: threatIntelAlerts.length > 0,
+  outages: internetOutages.length > 0,
+  bgp: bgpAlerts.length > 0
+}
 
   return (
     <div className="dashboard">
@@ -1173,25 +1206,57 @@ const allGlobePoints = [
         ) : (
           <>
             <div className="sectionTitle">STATUS</div>
+            <div className="card">
+  <strong>Active Events</strong>
+  <div style={{
+    fontSize: '28px',
+    marginTop: '10px',
+    color: '#00bfff',
+    fontWeight: 'bold'
+  }}>
+    {totalActiveEvents}
+  </div>
+</div>
             <div className="card">No event selected</div>
 
-            <div className="sectionTitle">DATA FEEDS</div>
-            <div className="card">Space Weather: Live</div>
+            <div className="sectionTitle">INTELLIGENCE SUMMARY</div>
 
-            <div className="sectionTitle">SPACE WEATHER</div>
-            {spaceWeather ? (
+            <div className="card detailCard">
+              <span>Earthquakes: {dashboardStats.earthquakes}</span>
+              <span>Volcanoes: {dashboardStats.volcanoes}</span>
+              <span>CVEs: {dashboardStats.cves}</span>
+              <span>Known Exploited: {dashboardStats.kevs}</span>
+              <span>Ransomware: {dashboardStats.ransomware}</span>
+              <span>Threat Intel: {dashboardStats.threatIntel}</span>
+              <span>Internet Outages: {dashboardStats.outages}</span>
+              <span>BGP Events: {dashboardStats.bgp}</span>
+            </div>
+
+              <div className="sectionTitle">FEED HEALTH</div>
+
               <div className="card detailCard">
-                <strong>KP Index: {spaceWeather.kpIndex}</strong>
-                <span>Status: {spaceWeather.status}</span>
-                <span>Updated: {spaceWeather.time}</span>
-              </div>
-            ) : (
-              <div className="card">Loading space weather...</div>
-            )}
 
-            <div className="card">Earthquakes: Live</div>
-            <div className="card">ISS: Live</div>
-            <div className="card">Starlink: Simulation</div>
+                <span>{feedHealth.spaceWeather ? '🟢' : '🔴'} Space Weather</span>
+
+                <span>{feedHealth.earthquakes ? '🟢' : '🔴'} Earthquakes</span>
+
+                <span>{feedHealth.volcanoes ? '🟢' : '🔴'} Volcanoes</span>
+
+                <span>{feedHealth.iss ? '🟢' : '🔴'} ISS Tracking</span>
+
+                <span>{feedHealth.cves ? '🟢' : '🔴'} CVE Feed</span>
+
+                <span>{feedHealth.kev ? '🟢' : '🔴'} KEV Feed</span>
+
+                <span>{feedHealth.ransomware ? '🟢' : '🔴'} Ransomware Feed</span>
+
+                <span>{feedHealth.threatIntel ? '🟢' : '🔴'} Threat Intel Feed</span>
+
+                <span>{feedHealth.outages ? '🟢' : '🔴'} Internet Outages</span>
+
+                <span>{feedHealth.bgp ? '🟢' : '🔴'} BGP Monitoring</span>
+
+              </div>
           </>
         )}
       </aside>
