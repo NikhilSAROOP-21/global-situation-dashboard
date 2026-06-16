@@ -49,6 +49,7 @@ function App() {
   const [threatIntelAlerts, setThreatIntelAlerts] = useState([])
 
 
+
 const filterOptions = [
   'Earthquake',
   'Volcano',
@@ -829,6 +830,49 @@ useEffect(() => {
   return () => clearInterval(interval)
 }, [])
 
+useEffect(() => {
+  const fetchBreachAlerts = async () => {
+    try {
+      const response = await fetch(
+        'https://haveibeenpwned.com/api/v3/breaches'
+      )
+
+      const data = await response.json()
+
+      const breaches = data.slice(0, 25).map((breach) => ({
+        lat: 37.7749 + (Math.random() - 0.5) * 60,
+        lng: -95.7129 + (Math.random() - 0.5) * 120,
+        size: 0.75,
+        color: '#ff6600',
+        title: breach.Name || 'Data Breach',
+        type: 'Data Breach',
+        location: breach.Domain || 'Unknown',
+        details: `Breach Date: ${breach.BreachDate || 'Unknown'}
+
+Records Exposed: ${breach.PwnCount?.toLocaleString() || 'Unknown'}
+
+Data Exposed:
+${breach.DataClasses?.slice(0, 8).join(', ') || 'Unknown'}
+
+Verified: ${breach.IsVerified ? 'Yes' : 'No'}
+
+Source: Have I Been Pwned`,
+        time: breach.BreachDate || 'Live'
+      }))
+
+      setBreachAlerts(breaches)
+    } catch (error) {
+      console.log('Data breach feed error:', error)
+    }
+  }
+
+  fetchBreachAlerts()
+
+  const interval = setInterval(fetchBreachAlerts, 3600000)
+
+  return () => clearInterval(interval)
+}, [])
+
   const selectEvent = (event) => {
     setSelectedEvent(event)
     if (globeRef.current) {
@@ -867,7 +911,8 @@ const allGlobePoints = [
   ...(isVisible('Internet Outage') ? internetOutages : []),
   ...(isVisible('BGP Hijack') ? bgpAlerts : []),
   ...(isVisible('Ransomware') ? ransomwareAlerts : []),
-  ...(isVisible('Threat Intel') ? threatIntelAlerts : [])
+  ...(isVisible('Threat Intel') ? threatIntelAlerts : []),
+  ...(isVisible('Data Breach') ? breachAlerts : [])
 ]
 
 const dashboardStats = {
@@ -877,6 +922,7 @@ const dashboardStats = {
   kevs: kevAlerts.length,
   ransomware: ransomwareAlerts.length,
   threatIntel: threatIntelAlerts.length,
+  breaches: breachAlerts.length,
   outages: internetOutages.length,
   bgp: bgpAlerts.length
 }
@@ -890,6 +936,55 @@ const totalActiveEvents =
   threatIntelAlerts.length +
   internetOutages.length +
   bgpAlerts.length
+
+const topThreat =
+  cves.length > 0
+    ? cves.reduce((highest, current) => {
+        const currentScore =
+          parseFloat(
+            current.details.match(/CVSS Score:\s*([\d.]+)/)?.[1] || 0
+          )
+
+        const highestScore =
+          parseFloat(
+            highest.details.match(/CVSS Score:\s*([\d.]+)/)?.[1] || 0
+          )
+
+        return currentScore > highestScore ? current : highest
+      })
+    : null
+
+    const criticalCVEs = cves.filter(event =>
+  event.details.includes('Severity: CRITICAL') ||
+  event.details.includes('CVSS Score: 9')
+).length
+
+const globalRiskScore =
+  criticalCVEs * 3 +
+  kevAlerts.length * 2 +
+  ransomwareAlerts.length * 2 +
+  breachAlerts.length +
+  threatIntelAlerts.length +
+  bgpAlerts.length +
+  internetOutages.length
+
+const globalRiskLevel =
+  globalRiskScore >= 80
+    ? 'CRITICAL'
+    : globalRiskScore >= 45
+    ? 'HIGH'
+    : globalRiskScore >= 20
+    ? 'ELEVATED'
+    : 'LOW'
+
+const globalRiskColor =
+  globalRiskLevel === 'CRITICAL'
+    ? '#ff0033'
+    : globalRiskLevel === 'HIGH'
+    ? '#ff6600'
+    : globalRiskLevel === 'ELEVATED'
+    ? '#ffaa00'
+    : '#00ff99'
 
 const feedHealth = {
   earthquakes: earthquakes.length > 0,
@@ -1035,6 +1130,24 @@ const feedHealth = {
       onClick={() => selectEvent(event)}
       style={{
         borderLeft: '4px solid #00ffaa'
+      }}
+    >
+      <strong>{event.title}</strong>
+      <span>{event.location}</span>
+    </div>
+  ))}
+</div>
+
+<div className="sectionTitle">DATA BREACHES</div>
+
+<div className="scrollList">
+  {breachAlerts.slice(0, 10).map((event, index) => (
+    <div
+      className="card clickable"
+      key={index}
+      onClick={() => selectEvent(event)}
+      style={{
+        borderLeft: '4px solid #ff6600'
       }}
     >
       <strong>{event.title}</strong>
@@ -1221,6 +1334,55 @@ const feedHealth = {
 
             <div className="sectionTitle">INTELLIGENCE SUMMARY</div>
 
+            <div className="sectionTitle">GLOBAL RISK LEVEL</div>
+
+<div className="card detailCard">
+  <strong
+    style={{
+      color: globalRiskColor,
+      fontSize: '24px',
+      letterSpacing: '2px'
+    }}
+  >
+    {globalRiskLevel}
+  </strong>
+
+  <span>Risk Score: {globalRiskScore}</span>
+  <span>Critical CVEs: {criticalCVEs}</span>
+  <span>KEV Alerts: {kevAlerts.length}</span>
+  <span>Ransomware: {ransomwareAlerts.length}</span>
+  <span>Data Breaches: {breachAlerts.length}</span>
+</div>
+
+            <div className="sectionTitle">TOP THREAT</div>
+
+<div className="card detailCard">
+  {topThreat ? (
+    <>
+      <strong>{topThreat.title}</strong>
+
+      <span style={{
+        color: '#ff4444',
+        fontWeight: 'bold',
+        marginTop: '10px'
+      }}>
+        CRITICAL THREAT
+      </span>
+
+      <p style={{
+        whiteSpace: 'pre-line',
+        marginTop: '10px'
+      }}>
+        {topThreat.details}
+      </p>
+    </>
+  ) : (
+    <span>No active threats</span>
+  )}
+</div>
+
+
+
             <div className="card detailCard">
               <span>Earthquakes: {dashboardStats.earthquakes}</span>
               <span>Volcanoes: {dashboardStats.volcanoes}</span>
@@ -1228,6 +1390,7 @@ const feedHealth = {
               <span>Known Exploited: {dashboardStats.kevs}</span>
               <span>Ransomware: {dashboardStats.ransomware}</span>
               <span>Threat Intel: {dashboardStats.threatIntel}</span>
+              <span>Data Breaches: {dashboardStats.breaches}</span>
               <span>Internet Outages: {dashboardStats.outages}</span>
               <span>BGP Events: {dashboardStats.bgp}</span>
             </div>
@@ -1263,5 +1426,6 @@ const feedHealth = {
     </div>
   )
 }
+
 
 export default App
