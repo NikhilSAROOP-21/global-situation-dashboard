@@ -30,7 +30,34 @@ body {
   border: 1px solid #333;
   padding: 14px;
   background: #080808;
-  overflow: hidden;
+}
+
+.leftPanel {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.rightPanel {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.leftPanel::-webkit-scrollbar,
+.rightPanel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.leftPanel::-webkit-scrollbar-thumb,
+.rightPanel::-webkit-scrollbar-thumb {
+  background: rgba(0, 191, 255, 0.55);
+  border-radius: 10px;
+}
+
+.leftPanel::-webkit-scrollbar-track,
+.rightPanel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .card {
@@ -82,8 +109,11 @@ h2 {
   border: 1px solid #707070;
   background: rgba(5, 5, 5, 0.92);
   padding: 18px;
+  padding-right: 12px;
   z-index: 5;
   box-shadow: 0 0 25px rgba(255, 255, 255, 0.12);
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .popup button {
@@ -97,16 +127,25 @@ h2 {
   cursor: pointer;
 }
 
+.popup::-webkit-scrollbar {
+  width: 6px;
+}
+
+.popup::-webkit-scrollbar-thumb {
+  background: #00e5ff;
+  border-radius: 10px;
+}
+
+.popup::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .clickable {
   cursor: pointer;
 }
 
 .clickable:hover {
   border-color: #aaa;
-}
-
-.rightPanel {
-  overflow-y: auto;
 }
 
 .sectionTitle {
@@ -116,12 +155,26 @@ h2 {
   font-size: 12px;
   color: #aaa;
   letter-spacing: 2px;
+  text-align: center;
 }
 
 .scrollList {
   max-height: 45vh;
   overflow-y: auto;
   padding-right: 4px;
+}
+
+.scrollList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+}
+
+.scrollList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .card span {
@@ -131,12 +184,15 @@ h2 {
   font-size: 12px;
 }
 
+.detailCard {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
 .detailCard p {
   color: #ccc;
   font-size: 13px;
   line-height: 1.5;
-  max-height: 70vh;
-  overflow-y: auto;
 }
 
 .clearButton {
@@ -154,6 +210,11 @@ h2 {
 
 .filterDropdown {
   margin-bottom: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #080808;
+  padding-bottom: 12px;
 }
 
 .filterDropdownButton {
@@ -203,23 +264,4 @@ h2 {
   color: #ffffff;
   border-color: #2f80ff;
   transform: translateY(-1px);
-}
-
-.popup {
-  max-height: 80vh;
-  overflow-y: auto;
-  padding-right: 12px;
-}
-
-.popup::-webkit-scrollbar {
-  width: 6px;
-}
-
-.popup::-webkit-scrollbar-thumb {
-  background: #00e5ff;
-  border-radius: 10px;
-}
-
-.popup::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.08);
 }
