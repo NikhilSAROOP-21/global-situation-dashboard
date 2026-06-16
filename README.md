@@ -1,8 +1,10 @@
 # Global Situation Dashboard
 
-An open-source real-time intelligence and monitoring dashboard built with React, Vite, and Three.js.
+An open-source real-time intelligence, disaster monitoring, and situational awareness platform built with React, Vite, Three.js, and React Globe GL.
 
-The dashboard provides a centralized view of global events through an interactive 3D globe, live data feeds, and event monitoring panels.
+The dashboard provides a centralized view of global events through an interactive 3D globe, live intelligence feeds, space monitoring systems, disaster tracking, and real-time event visualization.
+
+---
 
 ## Features
 
@@ -10,23 +12,36 @@ The dashboard provides a centralized view of global events through an interactiv
 
 * Interactive 3D globe
 * Automatic globe rotation
-* Click and drag navigation
+* Click-and-drag navigation
 * Zoom controls
 * Country border rendering
-* Event location markers
+* Real-time event markers
+* Event auto-focus and tracking
+* Dynamic event filtering
 
 ### Space Monitoring
 
-* Live ISS tracking
+* Live ISS tracking using TLE orbital data
+* Real-time ISS position prediction
+* ISS orbital path visualization
 * Simulated Starlink constellation
 * Satellite visualization around Earth
+* Space weather monitoring
 
 ### Earth Monitoring
 
 * Live earthquake feed from USGS
-* Event markers displayed on the globe
-* Earthquake details panel
+* Earthquake severity visualization
 * Automatic event updates
+* Earthquake details panel
+
+### Disaster Monitoring
+
+* Global disaster alerts
+* Weather alert monitoring
+* Active volcano monitoring
+* Emergency event visualization
+* Worldwide alert coverage
 
 ### Event Management
 
@@ -34,14 +49,17 @@ The dashboard provides a centralized view of global events through an interactiv
 * Event detail popups
 * Globe auto-focus on selected events
 * Event categorization
+* Dynamic filtering system
+* Live intelligence feed architecture
 
 ### Dashboard Interface
 
 * Dark intelligence-dashboard theme
 * Responsive layout
 * Live event panel
-* Event detail panel
+* Event details panel
 * Real-time monitoring architecture
+* Situational awareness design
 
 ---
 
@@ -54,10 +72,18 @@ The dashboard provides a centralized view of global events through an interactiv
 * React Globe GL
 * Three.js
 
+### Geospatial Processing
+
+* TopoJSON
+* Satellite.js
+
 ### Data Sources
 
 * USGS Earthquake Feed
-* WhereTheISS.at API
+* CelesTrak TLE Data
+* NOAA Space Weather Data
+* NASA EONET Volcano Events
+* GDACS Global Disaster Alerts
 
 ### Development Tools
 
@@ -101,9 +127,34 @@ http://localhost:5173
 
 ---
 
+## Current Monitoring Capabilities
+
+### Space Domain
+
+* International Space Station (ISS)
+* Orbital path prediction
+* Starlink constellation simulation
+* Space weather monitoring
+
+### Earth Domain
+
+* Earthquakes
+* Volcanoes
+* Weather alerts
+* Global disaster events
+
+### Intelligence Domain
+
+* Event filtering
+* Event categorization
+* Real-time event tracking
+* Interactive event analysis
+
+---
+
 ## Roadmap
 
-### Phase 1
+### Phase 1 ✅
 
 * [x] Interactive globe
 * [x] Country borders
@@ -112,13 +163,13 @@ http://localhost:5173
 * [x] Live ISS tracking
 * [x] Event details panel
 
-### Phase 2
+### Phase 2 ✅
 
-* [ ] Space weather monitoring
-* [ ] ISS orbital path visualization
-* [ ] Event filtering
-* [ ] Weather alerts
-* [ ] Volcano monitoring
+* [x] Space weather monitoring
+* [x] ISS orbital path visualization
+* [x] Event filtering
+* [x] Weather alerts
+* [x] Volcano monitoring
 
 ### Phase 3
 
@@ -133,6 +184,15 @@ http://localhost:5173
 * [ ] User-configurable dashboards
 * [ ] Multi-user support
 * [ ] Historical event playback
+
+### Phase 5 (Planned)
+
+* [ ] Aircraft tracking
+* [ ] Maritime tracking
+* [ ] Conflict monitoring
+* [ ] Wildfire monitoring
+* [ ] AI-powered event classification
+* [ ] Threat intelligence correlation
 
 ---
 

@@ -17,6 +17,9 @@ function App() {
   const [spaceWeather, setSpaceWeather] = useState(null)
   const [satellites, setSatellites] = useState([])
   const [activeFilter, setActiveFilter] = useState('All')
+  const [weatherAlerts, setWeatherAlerts] = useState([])
+  const [globalAlerts, setGlobalAlerts] = useState([])
+  const [volcanoes, setVolcanoes] = useState([])
 
   const events = [
     {
@@ -219,6 +222,114 @@ const updateISS = () => {
   }, [])
 
   useEffect(() => {
+  const fetchGlobalAlerts = async () => {
+    try {
+      const response = await fetch(
+        'https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?'
+      )
+
+      const data = await response.json()
+
+      const alerts = data.features
+        .filter((alert) => alert.geometry)
+        .map((alert) => ({
+          lat: alert.geometry.coordinates[1],
+          lng: alert.geometry.coordinates[0],
+          size: 0.55,
+          color: '#00bfff',
+          title: alert.properties.name || 'Global Alert',
+          type: 'Weather Alert',
+          location: alert.properties.country || 'Global',
+          details: alert.properties.description || 'GDACS global disaster alert',
+          time: alert.properties.fromdate || 'Live'
+        }))
+
+      setGlobalAlerts(alerts)
+    } catch (error) {
+      console.log('Global alert error:', error)
+    }
+  }
+
+  fetchGlobalAlerts()
+
+  const interval = setInterval(fetchGlobalAlerts, 300000)
+
+  return () => clearInterval(interval)
+}, [])
+
+useEffect(() => {
+  const fetchVolcanoes = async () => {
+    try {
+      const response = await fetch(
+        'https://eonet.gsfc.nasa.gov/api/v3/events?category=volcanoes&status=open'
+      )
+
+      const data = await response.json()
+
+      const volcanoEvents = data.events.map((event) => {
+        const geometry = event.geometry[event.geometry.length - 1]
+
+        return {
+          lat: geometry.coordinates[1],
+          lng: geometry.coordinates[0],
+          size: 0.65,
+          color: '#ff4d00',
+          title: event.title,
+          type: 'Volcano',
+          location: event.sources?.[0]?.id || 'NASA EONET',
+          details: `Active volcano event tracked by NASA EONET.`,
+          time: geometry.date || 'Live'
+        }
+      })
+
+      setVolcanoes(volcanoEvents)
+    } catch (error) {
+      console.log('Volcano data error:', error)
+    }
+  }
+
+  fetchVolcanoes()
+
+  const interval = setInterval(fetchVolcanoes, 300000)
+
+  return () => clearInterval(interval)
+}, [])
+
+  useEffect(() => {
+  const fetchWeatherAlerts = async () => {
+    try {
+      const response = await fetch(
+        'https://api.weather.gov/alerts/active'
+      )
+
+      const data = await response.json()
+
+      const alerts = data.features.slice(0, 50).map(alert => ({
+        lat: alert.geometry?.coordinates?.[0]?.[0]?.[1] || 0,
+        lng: alert.geometry?.coordinates?.[0]?.[0]?.[0] || 0,
+        size: 0.4,
+        color: '#00bfff',
+        title: alert.properties.event,
+        type: 'Weather Alert',
+        location: alert.properties.areaDesc,
+        details: alert.properties.headline,
+        time: 'Live'
+      }))
+
+      setWeatherAlerts(alerts)
+    } catch (error) {
+      console.log('Weather alert error:', error)
+    }
+  }
+
+  fetchWeatherAlerts()
+
+  const interval = setInterval(fetchWeatherAlerts, 300000)
+
+  return () => clearInterval(interval)
+}, [])
+
+  useEffect(() => {
     const createSatellites = () => {
       return Array.from({ length: 120 }, (_, i) => ({
         id: i,
@@ -334,9 +445,19 @@ const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredIS
     <div className="dashboard">
       <aside className="panel leftPanel">
         <h2>LIVE EVENTS</h2>
-
+        <div className="filterBar">
+          { ['All', 'Earthquake', 'Space Object', 'Internet Outage', 'Local Alert', 'Weather Alert', 'Volcano'].map(filter => (
+            <button
+              key={filter}
+              className={activeFilter === filter ? 'activeFilter' : ''}
+              onClick={() => setActiveFilter(filter)}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
         <div className="sectionTitle">GENERAL</div>
-        {events.map((event, index) => (
+        {filteredEvents.map((event, index) => (
           <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
             <strong>{event.title}</strong>
             <span>{event.time}</span>
@@ -345,7 +466,7 @@ const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredIS
 
         <div className="sectionTitle">EARTHQUAKES</div>
         <div className="scrollList">
-          {earthquakes.map((event, index) => (
+          {filteredEarthquakes.map((event, index) => (
             <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
               <strong>{event.title}</strong>
               <span>{event.location}</span>
@@ -354,7 +475,7 @@ const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredIS
         </div>
 
         <div className="sectionTitle">SPACE</div>
-        {iss
+{filteredISS
   .filter((event) => !event.isOrbitDot)
   .map((event, index) => (
     <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
