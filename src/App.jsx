@@ -16,6 +16,7 @@ function App() {
   const [issTrail, setIssTrail] = useState([])
   const [spaceWeather, setSpaceWeather] = useState(null)
   const [satellites, setSatellites] = useState([])
+  const [activeFilter, setActiveFilter] = useState('All')
 
   const events = [
     {
@@ -310,7 +311,24 @@ const updateISS = () => {
     }
   }
 
-  const allGlobePoints = [...events, ...earthquakes, ...iss]
+const filteredEvents =
+  activeFilter === 'All'
+    ? events
+    : events.filter((event) => event.type === activeFilter)
+
+const filteredEarthquakes =
+  activeFilter === 'All' || activeFilter === 'Earthquake'
+    ? earthquakes
+    : []
+
+const filteredISS =
+  activeFilter === 'All' || activeFilter === 'Space Object'
+    ? iss
+    : []
+
+const allGlobePoints = [...filteredEvents, ...filteredEarthquakes, ...filteredISS]
+
+
 
   return (
     <div className="dashboard">
@@ -336,12 +354,14 @@ const updateISS = () => {
         </div>
 
         <div className="sectionTitle">SPACE</div>
-        {iss.map((event, index) => (
-          <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
-            <strong>{event.title}</strong>
-            <span>{event.time}</span>
-          </div>
-        ))}
+        {iss
+  .filter((event) => !event.isOrbitDot)
+  .map((event, index) => (
+    <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
+      <strong>{event.title}</strong>
+      <span>{event.time}</span>
+    </div>
+  ))}
       </aside>
 
       <main className="globeArea" ref={containerRef}>
