@@ -987,6 +987,19 @@ useEffect(() => {
   setVessels(createVessels())
 }, [])
 
+useEffect(() => {
+  const interval = setInterval(() => {
+    setVessels(prev =>
+      prev.map(vessel => ({
+        ...vessel,
+        lng: vessel.lng + vessel.speed
+      }))
+    )
+  }, 1000)
+
+  return () => clearInterval(interval)
+}, [])
+
   const selectEvent = (event) => {
     setSelectedEvent(event)
     if (globeRef.current) {
@@ -1166,8 +1179,11 @@ const feedHealth = {
   kev: kevAlerts.length > 0,
   ransomware: ransomwareAlerts.length > 0,
   threatIntel: threatIntelAlerts.length > 0,
+  breaches: breachAlerts.length > 0,
   outages: internetOutages.length > 0,
-  bgp: bgpAlerts.length > 0
+  bgp: bgpAlerts.length > 0,
+  aircraft: aircraft.length > 0,
+  maritime: vessels.length > 0
 }
 
 const getTimeLimit = () => {
@@ -1876,6 +1892,12 @@ const threatTimeline = [
                 <span>{feedHealth.outages ? '🟢' : '🔴'} Internet Outages</span>
 
                 <span>{feedHealth.bgp ? '🟢' : '🔴'} BGP Monitoring</span>
+
+                <span>{feedHealth.breaches ? '🟢' : '🔴'} Data Breach Feed</span>
+
+                <span>{feedHealth.aircraft ? '🟢' : '🔴'} Aircraft Tracking</span>
+
+                <span>{feedHealth.maritime ? '🟢' : '🔴'} Maritime Tracking</span>
 
               </div>
 
