@@ -48,6 +48,7 @@ function App() {
   const [breachAlerts, setBreachAlerts] = useState([])
   const [threatIntelAlerts, setThreatIntelAlerts] = useState([])
   const [timelineRange, setTimelineRange] = useState('24h')
+  const [selectedCorrelation, setSelectedCorrelation] = useState(null)
 
 
 
@@ -886,6 +887,20 @@ Source: Have I Been Pwned`,
     }
   }
 
+  const selectCorrelation = (item) => {
+  setSelectedCorrelation(item)
+  setSelectedEvent(null)
+
+  if (globeRef.current && item.cve) {
+    const controls = globeRef.current.controls()
+    controls.autoRotate = false
+
+    globeRef.current.pointOfView(
+      { lat: item.cve.lat, lng: item.cve.lng, altitude: 1.6 },
+      1000
+    )
+  }
+}
 
 const isVisible = (type) => selectedFilters.includes(type)
 
@@ -1394,7 +1409,56 @@ const threatTimeline = [
       <aside className="panel rightPanel">
         <h2>EVENT DETAILS</h2>
 
-        {selectedEvent ? (
+        {selectedCorrelation ? (
+  <>
+    <div className="sectionTitle">CORRELATION DETAIL</div>
+
+    <div className="card detailCard">
+      <strong>{selectedCorrelation.cveId}</strong>
+
+      <span>Confidence: {selectedCorrelation.confidence}</span>
+      <span>Sources: {selectedCorrelation.sources.join(' → ')}</span>
+
+      <p style={{ whiteSpace: 'pre-line' }}>
+        {selectedCorrelation.cve.details}
+      </p>
+    </div>
+
+    {selectedCorrelation.kev && (
+      <div className="card detailCard">
+        <strong>CISA KEV Match</strong>
+        <span>{selectedCorrelation.kev.location}</span>
+        <span>{selectedCorrelation.kev.time}</span>
+        <p style={{ whiteSpace: 'pre-line' }}>
+          {selectedCorrelation.kev.details}
+        </p>
+      </div>
+    )}
+
+    {selectedCorrelation.threatIntel && (
+      <div className="card detailCard">
+        <strong>Threat Intel Match</strong>
+        <span>{selectedCorrelation.threatIntel.title}</span>
+        <span>{selectedCorrelation.threatIntel.time}</span>
+        <p style={{ whiteSpace: 'pre-line' }}>
+          {selectedCorrelation.threatIntel.details}
+        </p>
+      </div>
+    )}
+
+    <button
+      className="clearButton"
+      onClick={() => {
+        setSelectedCorrelation(null)
+        if (globeRef.current) {
+          globeRef.current.controls().autoRotate = true
+        }
+      }}
+    >
+      Deselect Correlation
+    </button>
+  </>
+) : selectedEvent ? (
           <>
             <div className="sectionTitle">SELECTED EVENT</div>
             <div className="card detailCard">
@@ -1618,7 +1682,7 @@ const threatTimeline = [
       <div
         className="timelineItem clickable"
         key={index}
-        onClick={() => selectEvent(item.cve)}
+        onClick={() => selectCorrelation(item)}
       >
         <div className="timelineDot">🔗</div>
 
