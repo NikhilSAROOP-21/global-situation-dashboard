@@ -47,6 +47,7 @@ function App() {
   const [ransomwareAlerts, setRansomwareAlerts] = useState([])
   const [breachAlerts, setBreachAlerts] = useState([])
   const [threatIntelAlerts, setThreatIntelAlerts] = useState([])
+  const [timelineRange, setTimelineRange] = useState('24h')
 
 
 
@@ -934,6 +935,7 @@ const totalActiveEvents =
   kevAlerts.length +
   ransomwareAlerts.length +
   threatIntelAlerts.length +
+  breachAlerts.length +
   internetOutages.length +
   bgpAlerts.length
 
@@ -998,6 +1000,60 @@ const feedHealth = {
   outages: internetOutages.length > 0,
   bgp: bgpAlerts.length > 0
 }
+
+const threatTimeline = [
+  ...cves.map(event => ({
+    ...event,
+    category: 'CVE',
+    icon: '🛡️',
+    sortTime: new Date(event.time).getTime()
+  })),
+
+  ...kevAlerts.map(event => ({
+    ...event,
+    category: 'KEV',
+    icon: '🚨',
+    sortTime: new Date(event.time).getTime()
+  })),
+
+  ...ransomwareAlerts.map(event => ({
+    ...event,
+    category: 'Ransomware',
+    icon: '💀',
+    sortTime: new Date(event.time).getTime()
+  })),
+
+  ...threatIntelAlerts.map(event => ({
+    ...event,
+    category: 'Threat Intel',
+    icon: '📡',
+    sortTime: new Date(event.time).getTime()
+  })),
+
+  ...breachAlerts.map(event => ({
+    ...event,
+    category: 'Data Breach',
+    icon: '🔓',
+    sortTime: new Date(event.time).getTime()
+  })),
+
+  ...internetOutages.map(event => ({
+    ...event,
+    category: 'Internet Outage',
+    icon: '🌐',
+    sortTime: new Date(event.time).getTime()
+  })),
+
+  ...bgpAlerts.map(event => ({
+    ...event,
+    category: 'BGP',
+    icon: '🛰️',
+    sortTime: new Date(event.time).getTime()
+  }))
+]
+  .filter(event => !Number.isNaN(event.sortTime))
+  .sort((a, b) => b.sortTime - a.sortTime)
+  .slice(0, 20)
 
   return (
     <div className="dashboard">
@@ -1420,6 +1476,62 @@ const feedHealth = {
                 <span>{feedHealth.bgp ? '🟢' : '🔴'} BGP Monitoring</span>
 
               </div>
+
+              <div className="sectionTitle">THREAT TIMELINE</div>
+
+const getTimeLimit = () => {
+  const now = Date.now()
+
+  switch (timelineRange) {
+    case '1h':
+      return now - (1 * 60 * 60 * 1000)
+
+    case '24h':
+      return now - (24 * 60 * 60 * 1000)
+
+    case '7d':
+      return now - (7 * 24 * 60 * 60 * 1000)
+
+    case '30d':
+      return now - (30 * 24 * 60 * 60 * 1000)
+
+    case '1y':
+      return now - (365 * 24 * 60 * 60 * 1000)
+
+    default:
+      return 0
+  }
+}
+
+<div className="timelineList">
+  {threatTimeline.length > 0 ? (
+    threatTimeline.map((event, index) => (
+      <div
+        className="timelineItem clickable"
+        key={index}
+        onClick={() => selectEvent(event)}
+      >
+        <div className="timelineDot">
+          {event.icon}
+        </div>
+
+        <div className="timelineContent">
+          <strong>{event.title}</strong>
+
+          <span>{event.category}</span>
+
+          <small>
+            {new Date(event.time).toLocaleString()}
+          </small>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="card">
+      No timeline events available
+    </div>
+  )}
+</div>
           </>
         )}
       </aside>
