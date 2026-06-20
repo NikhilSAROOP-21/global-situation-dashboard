@@ -390,3 +390,7 @@ h2 {
     transform: translateX(-100%);
   }
 }
+
+.clearButton {
+  margin-bottom: 12px;
+}

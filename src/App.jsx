@@ -39,7 +39,9 @@ function App() {
   'BGP Hijack',
   'Ransomware',
   'Data Breach',
-  'Threat Intel'
+  'Threat Intel',
+  'Aircraft',
+  'Maritime'
   
 ])
   const [issCrew, setIssCrew] = useState({ number: 0, people: [] })
@@ -50,6 +52,9 @@ function App() {
   const [timelineRange, setTimelineRange] = useState('24h')
   const [selectedCorrelation, setSelectedCorrelation] = useState(null)
   const [newsFeed, setNewsFeed] = useState([])
+  const [aircraft, setAircraft] = useState([])
+  const [vessels, setVessels] = useState([])
+  const [showHeatmap, setShowHeatmap] = useState(true)
 
 
 
@@ -64,7 +69,9 @@ const filterOptions = [
   'BGP Hijack',
   'Ransomware',
   'Data Breach',
-  'Threat Intel'
+  'Threat Intel',
+  'Aircraft',
+  'Maritime',
 ]
 
 const toggleFilter = (filter) => {
@@ -876,6 +883,110 @@ Source: Have I Been Pwned`,
   return () => clearInterval(interval)
 }, [])
 
+useEffect(() => {
+  const fetchAircraft = async () => {
+    try {
+      const response = await fetch('https://opensky-network.org/api/states/all')
+      const data = await response.json()
+
+      const aircraftEvents = data.states
+        .filter(plane =>
+          plane[5] !== null &&
+          plane[6] !== null &&
+          plane[7] !== null
+        )
+        .slice(0, 80)
+        .map((plane) => ({
+          lat: plane[6],
+          lng: plane[5],
+          altitude: 0.12,
+          size: 0.35,
+          color: '#ffffff',
+          title: plane[1]?.trim() || 'Unknown Aircraft',
+          type: 'Aircraft',
+          location: plane[2] || 'Unknown Origin',
+          details: `Callsign: ${plane[1]?.trim() || 'Unknown'}
+
+Origin Country: ${plane[2] || 'Unknown'}
+
+Altitude: ${Math.round(plane[7])} m
+
+Velocity: ${plane[9] ? Math.round(plane[9] * 3.6) : 'Unknown'} km/h
+
+Heading: ${plane[10] ? Math.round(plane[10]) : 'Unknown'}°`,
+          time: 'Live'
+        }))
+
+      setAircraft(aircraftEvents)
+    } catch (error) {
+      console.log('Aircraft feed error:', error)
+    }
+  }
+
+  fetchAircraft()
+
+  const interval = setInterval(fetchAircraft, 60000)
+
+  return () => clearInterval(interval)
+}, [])
+
+useEffect(() => {
+  const createVessels = () => {
+    return [
+      {
+        lat: -29.87,
+        lng: 31.05,
+        title: 'Durban Cargo Vessel',
+        type: 'Maritime',
+        location: 'Durban Port',
+        details: 'Simulated cargo vessel operating near Durban harbour.',
+        time: 'Live',
+        size: 0.45,
+        color: '#00ffcc',
+        speed: 0.015
+      },
+      {
+        lat: -33.91,
+        lng: 18.42,
+        title: 'Cape Town Container Ship',
+        type: 'Maritime',
+        location: 'Cape Town Port',
+        details: 'Simulated container vessel near Cape Town.',
+        time: 'Live',
+        size: 0.45,
+        color: '#00ffcc',
+        speed: 0.012
+      },
+      {
+        lat: 1.29,
+        lng: 103.85,
+        title: 'Singapore Tanker',
+        type: 'Maritime',
+        location: 'Singapore Strait',
+        details: 'Simulated tanker vessel in major shipping lane.',
+        time: 'Live',
+        size: 0.45,
+        color: '#00ffcc',
+        speed: 0.018
+      },
+      {
+        lat: 51.95,
+        lng: 4.14,
+        title: 'Rotterdam Freight Vessel',
+        type: 'Maritime',
+        location: 'Port of Rotterdam',
+        details: 'Simulated freight vessel near Rotterdam.',
+        time: 'Live',
+        size: 0.45,
+        color: '#00ffcc',
+        speed: 0.014
+      }
+    ]
+  }
+
+  setVessels(createVessels())
+}, [])
+
   const selectEvent = (event) => {
     setSelectedEvent(event)
     if (globeRef.current) {
@@ -929,8 +1040,46 @@ const allGlobePoints = [
   ...(isVisible('BGP Hijack') ? bgpAlerts : []),
   ...(isVisible('Ransomware') ? ransomwareAlerts : []),
   ...(isVisible('Threat Intel') ? threatIntelAlerts : []),
-  ...(isVisible('Data Breach') ? breachAlerts : [])
+  ...(isVisible('Data Breach') ? breachAlerts : []),
+  ...(isVisible('Aircraft') ? aircraft : []),
+  ...(isVisible('Maritime') ? vessels : []),
 ]
+
+const heatmapPoints = allGlobePoints
+  .filter(event =>
+    Number.isFinite(event.lat) &&
+    Number.isFinite(event.lng) &&
+    !event.isOrbitDot
+  )
+  .map(event => {
+    let weight = 1
+
+    if (event.type === 'CVE') weight = 3
+    if (event.type === 'Cyber Alert') weight = 5
+    if (event.type === 'Ransomware') weight = 4
+    if (event.type === 'Threat Intel') weight = 3
+    if (event.type === 'Data Breach') weight = 3
+    if (event.type === 'Earthquake') weight = 2
+    if (event.type === 'Volcano') weight = 3
+    if (event.type === 'Internet Outage') weight = 3
+    if (event.type === 'BGP Hijack') weight = 4
+    if (event.type === 'Aircraft') weight = 1
+    if (event.type === 'Maritime') weight = 1
+
+    return {
+      ...event,
+      weight,
+      heatSize: Math.min(1.2, 0.25 + weight * 0.14),
+      heatColor:
+        weight >= 5
+          ? 'rgba(255, 0, 0, 0.75)'
+          : weight >= 4
+          ? 'rgba(255, 100, 0, 0.65)'
+          : weight >= 3
+          ? 'rgba(255, 170, 0, 0.55)'
+          : 'rgba(0, 191, 255, 0.35)'
+    }
+  })
 
 const dashboardStats = {
   earthquakes: earthquakes.length,
@@ -941,19 +1090,23 @@ const dashboardStats = {
   threatIntel: threatIntelAlerts.length,
   breaches: breachAlerts.length,
   outages: internetOutages.length,
-  bgp: bgpAlerts.length
+  bgp: bgpAlerts.length,
+  aircraft: aircraft.length,
+  maritime: vessels.length
 }
 
 const totalActiveEvents =
   earthquakes.length +
   volcanoes.length +
+  aircraft.length +
   cves.length +
   kevAlerts.length +
   ransomwareAlerts.length +
   threatIntelAlerts.length +
   breachAlerts.length +
   internetOutages.length +
-  bgpAlerts.length
+  bgpAlerts.length +
+  vessels.length
 
 const topThreat =
   cves.length > 0
@@ -1347,6 +1500,24 @@ const threatTimeline = [
   ))}
 </div>
 
+<div className="sectionTitle">MARITIME</div>
+
+<div className="scrollList">
+  {vessels.map((event, index) => (
+    <div
+      className="card clickable"
+      key={index}
+      onClick={() => selectEvent(event)}
+      style={{
+        borderLeft: '4px solid #00ffcc'
+      }}
+    >
+      <strong>{event.title}</strong>
+      <span>{event.location}</span>
+    </div>
+  ))}
+</div>
+
         <div className="sectionTitle">GENERAL</div>
         {filteredEvents.map((event, index) => (
           <div className="card clickable" key={index} onClick={() => selectEvent(event)}>
@@ -1373,10 +1544,25 @@ const threatTimeline = [
       <strong>{event.title}</strong>
       <span>{event.time}</span>
     </div>
-
-
-
   ))}
+
+  <div className="sectionTitle">AIRCRAFT</div>
+
+<div className="scrollList">
+  {aircraft.slice(0, 20).map((event, index) => (
+    <div
+      className="card clickable"
+      key={index}
+      onClick={() => selectEvent(event)}
+      style={{
+        borderLeft: '4px solid #ffffff'
+      }}
+    >
+      <strong>{event.title}</strong>
+      <span>{event.location}</span>
+    </div>
+  ))}
+</div>
       </aside>
 
       <main className="globeArea" ref={containerRef}>
@@ -1408,6 +1594,13 @@ const threatTimeline = [
           pathAltitude={0.08}
 */
           pointsData={allGlobePoints}
+          ringsData={showHeatmap ? heatmapPoints : []}
+          ringLat="lat"
+          ringLng="lng"
+          ringColor={(event) => event.heatColor}
+          ringMaxRadius={(event) => event.heatSize}
+          ringPropagationSpeed={0.4}
+          ringRepeatPeriod={1800}
           pointLat="lat"
           pointLng="lng"
           pointColor="color"
@@ -1590,6 +1783,12 @@ const threatTimeline = [
             <div className="card">No event selected</div>
 
             <div className="sectionTitle">INTELLIGENCE SUMMARY</div>
+            <button
+  className="clearButton"
+  onClick={() => setShowHeatmap(!showHeatmap)}
+>
+  {showHeatmap ? 'Hide Threat Heatmap' : 'Show Threat Heatmap'}
+</button>
 
             <div className="sectionTitle">GLOBAL RISK LEVEL</div>
 
@@ -1643,6 +1842,8 @@ const threatTimeline = [
             <div className="card detailCard">
               <span>Earthquakes: {dashboardStats.earthquakes}</span>
               <span>Volcanoes: {dashboardStats.volcanoes}</span>
+              <span>Aircraft: {dashboardStats.aircraft}</span>
+              <span>Maritime: {dashboardStats.maritime}</span>
               <span>CVEs: {dashboardStats.cves}</span>
               <span>Known Exploited: {dashboardStats.kevs}</span>
               <span>Ransomware: {dashboardStats.ransomware}</span>
