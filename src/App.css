@@ -77,6 +77,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
 }
 
 .globeArea canvas {
@@ -348,4 +349,44 @@ h2 {
   color: #000 !important;
   border-color: #00bfff !important;
   font-weight: bold;
+}
+
+.newsTicker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  height: 38px;
+
+  background: rgba(0,0,0,0.95);
+  border-top: 1px solid #333;
+
+  overflow: hidden;
+
+  z-index: 100;
+}
+
+
+.newsTickerContent {
+  display: inline-block;
+  white-space: nowrap;
+  padding-top: 10px;
+  animation: tickerScroll 260s linear infinite;
+}
+
+.newsTickerContent span {
+  margin-right: 180px;
+  font-weight: 500;
+}
+
+
+@keyframes tickerScroll {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }

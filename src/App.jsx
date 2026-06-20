@@ -49,6 +49,7 @@ function App() {
   const [threatIntelAlerts, setThreatIntelAlerts] = useState([])
   const [timelineRange, setTimelineRange] = useState('24h')
   const [selectedCorrelation, setSelectedCorrelation] = useState(null)
+  const [newsFeed, setNewsFeed] = useState([])
 
 
 
@@ -1161,6 +1162,34 @@ const threatTimeline = [
   .sort((a, b) => b.sortTime - a.sortTime)
   .slice(0, 20)
 
+  const liveNewsFeed = [
+  ...earthquakes.map(event => ({
+    text: `🌎 ${event.title} - ${event.location}`,
+    time: event.time
+  })),
+
+  ...kevAlerts.map(event => ({
+    text: `🚨 KEV Added: ${event.title}`,
+    time: event.time
+  })),
+
+  ...ransomwareAlerts.map(event => ({
+    text: `⚠️ Ransomware Victim: ${event.title}`,
+    time: event.time
+  })),
+
+  ...breachAlerts.map(event => ({
+    text: `🔓 Data Breach: ${event.title}`,
+    time: event.time
+  })),
+
+  ...threatIntelAlerts.map(event => ({
+    text: `📡 Threat Intel: ${event.title}`,
+    time: event.time
+  }))
+]
+.slice(0, 50)
+
   return (
     <div className="dashboard">
       <aside className="panel leftPanel">
@@ -1402,6 +1431,16 @@ const threatTimeline = [
             return new THREE.Mesh(geometry, material)
           }}
         />
+
+<div className="newsTicker">
+  <div className="newsTickerContent">
+    {liveNewsFeed.map((item, index) => (
+      <span key={index}>
+        {item.text}
+      </span>
+    ))}
+  </div>
+</div>
 
         {selectedEvent && (
           <div className="popup">
@@ -1742,6 +1781,7 @@ const threatTimeline = [
           </>
         )}
       </aside>
+
     </div>
   )
 }
