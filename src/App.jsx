@@ -1062,14 +1062,39 @@ const correlatedThreats = cves.map(cve => {
     matchingThreatIntel && 'Threat Intel'
   ].filter(Boolean)
 
-  return {
-    cveId,
-    cve,
-    kev: matchingKev,
-    threatIntel: matchingThreatIntel,
-    sources,
-    confidence: sources.length >= 3 ? 'HIGH' : sources.length === 2 ? 'MEDIUM' : 'LOW'
-  }
+  const severityScore =
+  sources.length >= 3
+    ? 95
+    : sources.length === 2 && matchingKev
+    ? 85
+    : sources.length === 2
+    ? 70
+    : 40
+
+const priority =
+  severityScore >= 90
+    ? 'CRITICAL'
+    : severityScore >= 75
+    ? 'HIGH'
+    : severityScore >= 50
+    ? 'ELEVATED'
+    : 'LOW'
+
+return {
+  cveId,
+  cve,
+  kev: matchingKev,
+  threatIntel: matchingThreatIntel,
+  sources,
+  confidence:
+    sources.length >= 3
+      ? 'HIGH'
+      : sources.length === 2
+      ? 'MEDIUM'
+      : 'LOW',
+  severityScore,
+  priority
+}
 }).filter(item => item.sources.length >= 2)
 
 const threatTimeline = [
@@ -1417,6 +1442,8 @@ const threatTimeline = [
       <strong>{selectedCorrelation.cveId}</strong>
 
       <span>Confidence: {selectedCorrelation.confidence}</span>
+      <span>Priority: {selectedCorrelation.priority}</span>
+      <span>Severity Score: {selectedCorrelation.severityScore}</span>
       <span>Sources: {selectedCorrelation.sources.join(' → ')}</span>
 
       <p style={{ whiteSpace: 'pre-line' }}>
@@ -1689,7 +1716,7 @@ const threatTimeline = [
         <div className="timelineContent">
           <strong>{item.cveId}</strong>
           <span>{item.sources.join(' → ')}</span>
-          <small>Confidence: {item.confidence}</small>
+          <small>{item.priority} | Confidence: {item.confidence}</small>
         </div>
       </div>
     ))
