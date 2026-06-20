@@ -1001,6 +1001,30 @@ const feedHealth = {
   bgp: bgpAlerts.length > 0
 }
 
+const getTimeLimit = () => {
+  const now = Date.now()
+
+  switch (timelineRange) {
+    case '1h':
+      return now - (1 * 60 * 60 * 1000)
+
+    case '24h':
+      return now - (24 * 60 * 60 * 1000)
+
+    case '7d':
+      return now - (7 * 24 * 60 * 60 * 1000)
+
+    case '30d':
+      return now - (30 * 24 * 60 * 60 * 1000)
+
+    case '1y':
+      return now - (365 * 24 * 60 * 60 * 1000)
+
+    default:
+      return 0
+  }
+}
+
 const threatTimeline = [
   ...cves.map(event => ({
     ...event,
@@ -1051,7 +1075,10 @@ const threatTimeline = [
     sortTime: new Date(event.time).getTime()
   }))
 ]
-  .filter(event => !Number.isNaN(event.sortTime))
+  .filter(event =>
+  !Number.isNaN(event.sortTime) &&
+  event.sortTime >= getTimeLimit()
+)
   .sort((a, b) => b.sortTime - a.sortTime)
   .slice(0, 20)
 
@@ -1477,31 +1504,48 @@ const threatTimeline = [
 
               </div>
 
+<div className="timelineFilters">
+
+  <button
+    className={timelineRange === '1h' ? 'activeTime' : ''}
+    onClick={() => setTimelineRange('1h')}
+  >
+    1H
+  </button>
+
+  <button
+    className={timelineRange === '24h' ? 'activeTime' : ''}
+    onClick={() => setTimelineRange('24h')}
+  >
+    24H
+  </button>
+
+  <button
+    className={timelineRange === '7d' ? 'activeTime' : ''}
+    onClick={() => setTimelineRange('7d')}
+  >
+    7D
+  </button>
+
+  <button
+    className={timelineRange === '30d' ? 'activeTime' : ''}
+    onClick={() => setTimelineRange('30d')}
+  >
+    30D
+  </button>
+
+  <button
+    className={timelineRange === '1y' ? 'activeTime' : ''}
+    onClick={() => setTimelineRange('1y')}
+  >
+    1Y
+  </button>
+
+</div>
+
               <div className="sectionTitle">THREAT TIMELINE</div>
 
-const getTimeLimit = () => {
-  const now = Date.now()
 
-  switch (timelineRange) {
-    case '1h':
-      return now - (1 * 60 * 60 * 1000)
-
-    case '24h':
-      return now - (24 * 60 * 60 * 1000)
-
-    case '7d':
-      return now - (7 * 24 * 60 * 60 * 1000)
-
-    case '30d':
-      return now - (30 * 24 * 60 * 60 * 1000)
-
-    case '1y':
-      return now - (365 * 24 * 60 * 60 * 1000)
-
-    default:
-      return 0
-  }
-}
 
 <div className="timelineList">
   {threatTimeline.length > 0 ? (
