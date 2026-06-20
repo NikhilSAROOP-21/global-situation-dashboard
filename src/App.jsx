@@ -1030,49 +1030,49 @@ const threatTimeline = [
     ...event,
     category: 'CVE',
     icon: '🛡️',
-    sortTime: new Date(event.time).getTime()
+    sortTime: Date.parse(event.time) || Date.now()
   })),
 
   ...kevAlerts.map(event => ({
     ...event,
     category: 'KEV',
     icon: '🚨',
-    sortTime: new Date(event.time).getTime()
+    sortTime: Date.parse(event.time) || Date.now()
   })),
 
   ...ransomwareAlerts.map(event => ({
     ...event,
     category: 'Ransomware',
     icon: '💀',
-    sortTime: new Date(event.time).getTime()
+    sortTime: Date.parse(event.time) || Date.now()
   })),
 
   ...threatIntelAlerts.map(event => ({
     ...event,
     category: 'Threat Intel',
     icon: '📡',
-    sortTime: new Date(event.time).getTime()
+    sortTime: Date.parse(event.time) || Date.now()
   })),
 
   ...breachAlerts.map(event => ({
     ...event,
     category: 'Data Breach',
     icon: '🔓',
-    sortTime: new Date(event.time).getTime()
+    sortTime: Date.parse(event.time) || Date.now()
   })),
 
   ...internetOutages.map(event => ({
     ...event,
     category: 'Internet Outage',
     icon: '🌐',
-    sortTime: new Date(event.time).getTime()
+    sortTime: Date.parse(event.time) || Date.now()
   })),
 
   ...bgpAlerts.map(event => ({
     ...event,
     category: 'BGP',
     icon: '🛰️',
-    sortTime: new Date(event.time).getTime()
+    sortTime: Date.parse(event.time) || Date.now()
   }))
 ]
   .filter(event =>
