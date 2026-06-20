@@ -1071,6 +1071,11 @@ const correlatedThreats = cves.map(cve => {
     ? 70
     : 40
 
+    const correlationReason = [
+  matchingKev && 'This CVE appears in the CISA Known Exploited Vulnerabilities feed.',
+  matchingThreatIntel && 'This CVE is mentioned in a threat intelligence advisory.'
+].filter(Boolean).join('\n')
+
 const priority =
   severityScore >= 90
     ? 'CRITICAL'
@@ -1093,7 +1098,8 @@ return {
       ? 'MEDIUM'
       : 'LOW',
   severityScore,
-  priority
+  priority,
+  correlationReason
 }
 }).filter(item => item.sources.length >= 2)
 
@@ -1437,6 +1443,7 @@ const threatTimeline = [
         {selectedCorrelation ? (
   <>
     <div className="sectionTitle">CORRELATION DETAIL</div>
+    
 
     <div className="card detailCard">
       <strong>{selectedCorrelation.cveId}</strong>
@@ -1450,6 +1457,10 @@ const threatTimeline = [
         {selectedCorrelation.cve.details}
       </p>
     </div>
+
+    <p style={{ whiteSpace: 'pre-line' }}>
+  {selectedCorrelation.correlationReason}
+</p>
 
     {selectedCorrelation.kev && (
       <div className="card detailCard">
