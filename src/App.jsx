@@ -1565,7 +1565,7 @@ const threatTimeline = [
           <span>{event.category}</span>
 
           <small>
-            {new Date(event.time).toLocaleString()}
+            {new Date(event.sortTime).toLocaleString()}
           </small>
         </div>
       </div>
