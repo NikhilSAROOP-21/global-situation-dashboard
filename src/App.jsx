@@ -1025,6 +1025,38 @@ const getTimeLimit = () => {
   }
 }
 
+const extractCveIds = (text = '') => {
+  const matches = text.match(/CVE-\d{4}-\d{4,7}/gi)
+  return matches ? [...new Set(matches.map(id => id.toUpperCase()))] : []
+}
+
+const correlatedThreats = cves.map(cve => {
+  const cveId = cve.title
+
+  const matchingKev = kevAlerts.find(kev =>
+    kev.title === cveId || extractCveIds(kev.details).includes(cveId)
+  )
+
+  const matchingThreatIntel = threatIntelAlerts.find(alert =>
+    extractCveIds(`${alert.title} ${alert.details}`).includes(cveId)
+  )
+
+  const sources = [
+    cve && 'NVD CVE',
+    matchingKev && 'CISA KEV',
+    matchingThreatIntel && 'Threat Intel'
+  ].filter(Boolean)
+
+  return {
+    cveId,
+    cve,
+    kev: matchingKev,
+    threatIntel: matchingThreatIntel,
+    sources,
+    confidence: sources.length >= 3 ? 'HIGH' : sources.length === 2 ? 'MEDIUM' : 'LOW'
+  }
+}).filter(item => item.sources.length >= 2)
+
 const threatTimeline = [
   ...cves.map(event => ({
     ...event,
@@ -1032,6 +1064,7 @@ const threatTimeline = [
     icon: '🛡️',
     sortTime: Date.parse(event.time) || Date.now()
   })),
+
 
   ...kevAlerts.map(event => ({
     ...event,
@@ -1576,6 +1609,34 @@ const threatTimeline = [
     </div>
   )}
 </div>
+
+<div className="sectionTitle">CORRELATED THREATS</div>
+
+<div className="timelineList">
+  {correlatedThreats.length > 0 ? (
+    correlatedThreats.map((item, index) => (
+      <div
+        className="timelineItem clickable"
+        key={index}
+        onClick={() => selectEvent(item.cve)}
+      >
+        <div className="timelineDot">🔗</div>
+
+        <div className="timelineContent">
+          <strong>{item.cveId}</strong>
+          <span>{item.sources.join(' → ')}</span>
+          <small>Confidence: {item.confidence}</small>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="card">
+      No verified correlations found
+    </div>
+  )}
+</div>
+
+
           </>
         )}
       </aside>
