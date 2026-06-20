@@ -323,3 +323,29 @@ h2 {
   color: #999;
   font-size: 11px;
 }
+.timelineFilters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.timelineFilters button {
+  background: #111;
+  border: 1px solid #333;
+  color: #aaa;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.timelineFilters button:hover {
+  border-color: #00bfff;
+}
+
+.activeTime {
+  background: #00bfff !important;
+  color: #000 !important;
+  border-color: #00bfff !important;
+  font-weight: bold;
+}
