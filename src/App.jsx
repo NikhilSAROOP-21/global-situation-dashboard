@@ -4,6 +4,7 @@ import * as topojson from 'topojson-client'
 import * as THREE from 'three'
 import './App.css'
 import * as satellite from 'satellite.js'
+import ReactMarkdown from 'react-markdown'
 
   const CLOUDFLARE_RADAR_TOKEN = ''
   const BGP_API_TOKEN = ''
@@ -1864,9 +1865,9 @@ const askDashboardAssistant = async () => {
   </button>
 
   {assistantAnswer && (
-    <p className="assistantAnswer">
-      {assistantAnswer}
-    </p>
+<div className="assistantAnswer">
+  <ReactMarkdown>{assistantAnswer}</ReactMarkdown>
+</div>
   )}
 </div>
 
