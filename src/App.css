@@ -394,3 +394,23 @@ h2 {
 .clearButton {
   margin-bottom: 12px;
 }
+
+.assistantInput {
+  width: 100%;
+  min-height: 80px;
+  background: #050505;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.assistantAnswer {
+  white-space: pre-line;
+  color: #ccc;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+}

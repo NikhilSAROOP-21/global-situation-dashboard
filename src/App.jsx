@@ -55,6 +55,9 @@ function App() {
   const [aircraft, setAircraft] = useState([])
   const [vessels, setVessels] = useState([])
   const [showHeatmap, setShowHeatmap] = useState(true)
+  const [assistantQuestion, setAssistantQuestion] = useState('')
+  const [assistantAnswer, setAssistantAnswer] = useState('')
+  const [assistantLoading, setAssistantLoading] = useState(false)
 
 
 
@@ -1359,6 +1362,48 @@ const threatTimeline = [
 ]
 .slice(0, 50)
 
+const askDashboardAssistant = async () => {
+  if (!assistantQuestion.trim()) return
+
+  setAssistantLoading(true)
+  setAssistantAnswer('')
+
+  const dashboardData = {
+    globalRiskLevel,
+    globalRiskScore,
+    topThreat,
+    correlatedThreats,
+    dashboardStats,
+    feedHealth,
+    threatTimeline: threatTimeline.slice(0, 10),
+    aircraft: aircraft.slice(0, 10),
+    maritime: vessels.slice(0, 10),
+    earthquakes: earthquakes.slice(0, 10),
+    volcanoes: volcanoes.slice(0, 10)
+  }
+
+  try {
+    const response = await fetch('http://localhost:5050/api/assistant', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        question: assistantQuestion,
+        dashboard: dashboardData
+      })
+    })
+
+    const data = await response.json()
+
+    setAssistantAnswer(data.answer || data.error || 'No answer returned.')
+  } catch (error) {
+    setAssistantAnswer('Could not connect to local AI assistant.')
+  } finally {
+    setAssistantLoading(false)
+  }
+}
+
   return (
     <div className="dashboard">
       <aside className="panel leftPanel">
@@ -1799,6 +1844,32 @@ const threatTimeline = [
             <div className="card">No event selected</div>
 
             <div className="sectionTitle">INTELLIGENCE SUMMARY</div>
+
+<div className="sectionTitle">AI DASHBOARD ASSISTANT</div>
+
+<div className="card detailCard">
+  <textarea
+    value={assistantQuestion}
+    onChange={(e) => setAssistantQuestion(e.target.value)}
+    placeholder="Ask the dashboard something..."
+    className="assistantInput"
+  />
+
+  <button
+    className="clearButton"
+    onClick={askDashboardAssistant}
+    disabled={assistantLoading}
+  >
+    {assistantLoading ? 'Thinking...' : 'Ask AI Assistant'}
+  </button>
+
+  {assistantAnswer && (
+    <p className="assistantAnswer">
+      {assistantAnswer}
+    </p>
+  )}
+</div>
+
             <button
   className="clearButton"
   onClick={() => setShowHeatmap(!showHeatmap)}
