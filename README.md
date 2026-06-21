@@ -1,68 +1,95 @@
 # Global Situation Dashboard
 
-A real-time open-source intelligence, cyber threat monitoring, disaster awareness, network intelligence, and multi-domain situational awareness platform built with React, Vite, Three.js, React Globe GL, and Satellite.js.
+A real-time open-source intelligence (OSINT), cyber threat monitoring, disaster awareness, network intelligence, space operations, aviation tracking, maritime awareness, and AI-assisted situational awareness platform built with React, Vite, Three.js, React Globe GL, Satellite.js, and Ollama.
 
-The platform provides a centralized operational picture of global events through an interactive 3D globe, live intelligence feeds, cyber threat monitoring, network awareness, air traffic monitoring, maritime tracking, disaster intelligence, and space operations monitoring.
+The Global Situation Dashboard provides a centralized operational picture of events occurring across multiple intelligence domains. By combining live cyber threat feeds, disaster monitoring systems, space tracking, network intelligence, aviation monitoring, maritime awareness, and a local AI analyst assistant, the platform delivers a single pane of glass for understanding what is happening around the world.
 
 ---
 
-## Overview
+# Why This Project Exists
 
-The Global Situation Dashboard combines multiple intelligence domains into a single operational picture, allowing users to monitor cyber threats, natural disasters, space operations, network disruptions, aircraft activity, and maritime movements from one interface.
+Information is often fragmented across dozens of websites, dashboards, intelligence feeds, and monitoring platforms.
+
+The goal of this project is to bring together multiple domains of intelligence into one interactive platform where users can quickly understand:
+
+* What is happening right now
+* Which threats are most important
+* How different events may be related
+* What the overall global risk level is
+* Which intelligence feeds are healthy and operational
+* What actions may require further investigation
 
 The dashboard is designed for:
 
+* Security Operations Centers (SOC)
+* Open Source Intelligence (OSINT) enthusiasts
 * Cybersecurity professionals
+* Students and researchers
 * Intelligence analysts
-* Security operations centers
-* Researchers
-* Students
-* Open-source intelligence (OSINT) enthusiasts
+* Disaster monitoring teams
+* Aviation and maritime enthusiasts
+* Anyone interested in global situational awareness
 
 ---
 
-## Features
+# Key Features
 
-### Global Intelligence Globe
+## Interactive 3D Globe
+
+The platform is built around a real-time 3D globe providing a visual representation of intelligence events occurring around the world.
+
+Features include:
 
 * Interactive 3D Earth visualization
 * Automatic globe rotation
 * Country border rendering
-* Zoom and drag controls
-* Real-time event visualization
-* Dynamic event filtering
-* Event auto-focus and tracking
-* Multi-domain situational awareness
+* Zoom controls
+* Drag navigation
+* Real-time event markers
+* Event auto-focus
+* Dynamic filtering system
 * Threat heatmap visualization
+* Multi-domain intelligence awareness
 
 ---
+
+# Intelligence Domains
 
 ## Space Domain
 
 ### International Space Station (ISS)
 
-* Live ISS tracking
-* Real-time orbital calculations
-* TLE-based orbit propagation
-* Ground position tracking
-* Orbital velocity monitoring
+Live ISS tracking powered by orbital calculations and TLE propagation.
+
+Features:
+
+* Live ISS position
+* Orbital path visualization
+* Ground track display
 * Altitude monitoring
-* ISS crew monitoring
+* Velocity monitoring
+* Crew monitoring
 * Crew manifest display
-* Live orbital path visualization
+* Real-time updates
 
 ### Space Weather
 
-* NOAA KP Index monitoring
-* Geomagnetic storm monitoring
+Powered by NOAA Space Weather data.
+
+Features:
+
+* KP Index monitoring
+* Geomagnetic storm awareness
 * Solar activity awareness
 * Space weather operational status
 
 ### Satellite Awareness
 
+Features:
+
 * Simulated Starlink constellation
 * Orbital object visualization
-* Space situational awareness display
+* Space situational awareness
 
 ---
 
@@ -70,14 +97,18 @@ The dashboard is designed for:
 
 ### Aircraft Tracking
 
+Powered by OpenSky Network.
+
+Features:
+
 * Live aircraft monitoring
-* OpenSky Network integration
 * Aircraft position tracking
-* Callsign display
+* Callsign information
 * Origin country information
 * Altitude monitoring
-* Velocity monitoring
-* Aircraft event statistics
+* Speed monitoring
+* Aircraft statistics
+* Air domain awareness
 
 ---
 
@@ -85,12 +116,14 @@ The dashboard is designed for:
 
 ### Vessel Tracking
 
+Features:
+
 * Maritime traffic visualization
 * Cargo vessel monitoring
 * Tanker monitoring
 * Port activity awareness
 * Vessel movement simulation
-* Maritime event statistics
+* Maritime statistics
 
 ---
 
@@ -98,65 +131,95 @@ The dashboard is designed for:
 
 ### Earthquake Monitoring
 
-* Live USGS earthquake feed
-* Magnitude visualization
+Powered by the United States Geological Survey (USGS).
+
+Features:
+
+* Live earthquake feed
+* Magnitude reporting
 * Depth reporting
 * Global earthquake tracking
 
 ### Volcano Monitoring
 
-* NASA EONET volcano monitoring
-* Active eruption tracking
-* Global volcanic activity awareness
+Powered by NASA EONET.
 
-### Weather Alerts
+Features:
 
-* Active weather warning monitoring
-* Severe weather awareness
-* Global alert visualization
+* Active volcano monitoring
+* Eruption awareness
+* Global volcanic activity tracking
+
+### Weather Monitoring
+
+Features:
+
+* Severe weather alerts
+* Active weather warnings
+* Weather event visualization
 
 ### Disaster Intelligence
 
-* GDACS disaster monitoring
-* Worldwide emergency awareness
-* Disaster event visualization
+Powered by GDACS.
+
+Features:
+
+* Global disaster monitoring
+* Emergency event tracking
+* Disaster awareness visualization
 
 ---
 
 ## Cyber Threat Intelligence
 
-### Vulnerability Intelligence
+### CVE Monitoring
 
-* Live NVD CVE monitoring
-* CVSS severity scoring
+Powered by the National Vulnerability Database (NVD).
+
+Features:
+
+* Live CVE monitoring
+* CVSS scoring
 * Critical vulnerability identification
-* Top threat detection
+* Severity prioritization
 
 ### Known Exploited Vulnerabilities (KEV)
 
-* CISA KEV monitoring
-* Actively exploited vulnerability tracking
+Powered by CISA.
+
+Features:
+
+* Active exploitation monitoring
+* Known exploited vulnerability tracking
 * High-priority threat awareness
 
 ### Threat Intelligence
 
+Features:
+
 * Cybersecurity advisory monitoring
-* Threat intelligence feed integration
-* Security event awareness
+* Threat intelligence tracking
+* Security event monitoring
 
 ### Ransomware Monitoring
 
-* Ransomware.live integration
-* Victim tracking
+Powered by Ransomware.live.
+
+Features:
+
+* Victim monitoring
 * Campaign awareness
-* Sector intelligence
+* Sector tracking
+* Incident monitoring
 
 ### Data Breach Monitoring
 
+Features:
+
 * Public breach intelligence
-* Breach event tracking
 * Records exposure awareness
-* Breach timeline monitoring
+* Breach event tracking
+* Breach monitoring
 
 ---
 
@@ -164,110 +227,124 @@ The dashboard is designed for:
 
 ### Internet Outage Monitoring
 
+Features:
+
 * Regional outage awareness
-* Connectivity event tracking
-* Internet disruption monitoring
+* Connectivity disruption monitoring
+* Network event tracking
 
 ### BGP Monitoring
 
+Features:
+
 * BGP anomaly monitoring
-* Routing event awareness
-* Route hijack monitoring
-* Internet infrastructure visibility
+* Route hijack awareness
+* Internet routing visibility
 
 ---
 
-## Intelligence Operations
+# Intelligence Operations
 
-### Threat Timeline
+## Threat Timeline
 
-Monitor intelligence events over time.
+The timeline provides a chronological view of intelligence events.
 
-Features include:
+Supported views:
 
-* Historical event timeline
-* Time-based filtering
-* 1 Hour view
-* 24 Hour view
-* 7 Day view
-* 30 Day view
-* 1 Year view
-* Chronological event tracking
+* Last Hour
+* Last 24 Hours
+* Last 7 Days
+* Last 30 Days
+* Last Year
+
+Features:
+
+* Historical event analysis
+* Event filtering
+* Timeline navigation
+* Event prioritization
 
 ---
 
-### Correlation Engine
+## Correlation Engine
 
-Automatically correlates intelligence events across multiple sources.
+The correlation engine attempts to identify relationships between intelligence events.
 
-Features include:
+Features:
 
-* CVE correlation analysis
-* KEV correlation matching
-* Threat intelligence correlation
+* Threat correlation
+* CVE correlation
+* KEV matching
+* Threat intelligence matching
 * Confidence scoring
 * Severity scoring
-* Threat prioritization
 * Correlation reasoning
-* Multi-source validation
+* Threat prioritization
 
 ---
 
-### Threat Heatmap
+## Threat Heatmap
 
-Visual threat intensity layer displayed directly on the globe.
+The heatmap layer visualizes concentrations of activity across the globe.
 
-Based on:
+Threat levels are calculated using:
 
 * CVEs
 * KEVs
-* Threat Intelligence
-* Ransomware
-* Data Breaches
-* Internet Outages
-* BGP Events
-* Natural Disasters
+* Threat intelligence
+* Data breaches
+* Ransomware activity
+* Internet outages
+* BGP anomalies
+* Natural disasters
 
 ---
 
-### News Ticker
+## News Ticker
 
-Live intelligence feed displayed across the dashboard.
+A live intelligence ticker provides continuously updated event information across the platform.
 
 Includes:
 
-* Earthquake notifications
-* KEV notifications
+* Earthquakes
+* Cyber threats
+* KEV additions
+* Data breaches
 * Threat intelligence updates
 * Ransomware activity
-* Data breach alerts
 
 ---
 
-### Intelligence Summary
+## Global Risk Assessment
 
-Real-time intelligence overview including:
+The platform calculates an overall global risk score.
 
-* Active event count
-* Earthquake count
-* Volcano count
-* Aircraft count
-* Maritime count
-* CVE count
-* KEV count
-* Ransomware count
-* Threat intelligence count
-* Data breach count
-* Network event count
+Risk Levels:
+
+* LOW
+* ELEVATED
+* HIGH
+* CRITICAL
+
+Factors include:
+
+* Critical vulnerabilities
+* Active KEVs
+* Ransomware incidents
+* Threat intelligence alerts
+* Data breaches
+* Network events
 
 ---
 
-### Feed Health Monitoring
+## Feed Health Monitoring
 
-Operational status monitoring for:
+Feed health monitoring provides operational awareness of platform data sources.
 
-* Space Weather
+Monitored Feeds:
+
 * ISS Tracking
+* Space Weather
 * Earthquakes
 * Volcanoes
 * Aircraft Tracking
@@ -282,114 +359,164 @@ Operational status monitoring for:
 
 ---
 
-### Top Threat Analysis
+# AI Intelligence Assistant
 
-Automatically identifies:
+One of the core features of the platform is the built-in AI Intelligence Assistant.
 
-* Highest severity CVE
-* Critical vulnerabilities
-* Most significant cyber threat
-* Priority intelligence target
+The assistant is powered locally using Ollama and can answer questions using live dashboard data.
 
----
+Unlike traditional AI chatbots, the assistant receives structured intelligence data directly from the dashboard.
 
-### Global Risk Assessment
+Example Questions:
 
-Dynamic threat level calculation.
+* What is the current global risk level?
+* What is the top threat right now?
+* Summarize the last 24 hours.
+* Are there any correlated threats?
+* How many aircraft are currently being tracked?
+* What are the most significant cyber events?
+* Explain why the risk level is elevated.
 
-Risk Levels:
+Features:
 
-* LOW
-* ELEVATED
-* HIGH
-* CRITICAL
-
-Calculated using:
-
-* Critical CVEs
-* Active KEVs
-* Ransomware activity
-* Data breaches
-* Threat intelligence alerts
-* Network events
+* Local AI processing
+* No cloud dependency
+* No API costs
+* Dashboard-aware responses
+* Analyst-style summaries
+* Natural language interaction
 
 ---
 
-## Technology Stack
+# Technology Stack
 
-### Frontend
+## Frontend
 
 * React
 * Vite
 * React Globe GL
 * Three.js
 
-### Geospatial Processing
+## Geospatial Processing
 
-* TopoJSON
 * GeoJSON
+* TopoJSON
 
-### Orbital Processing
+## Orbital Processing
 
 * Satellite.js
 * TLE Propagation
 
-### State Management
+## Backend
 
-* React Hooks
-* Real-Time Polling Architecture
+* Node.js
+* Express
+* CORS
+
+## Artificial Intelligence
+
+* Ollama
+* Llama 3.1
 
 ---
 
-## Data Sources
+# Data Sources
 
-### Space
+## Space
 
-* WhereTheISS.at
 * Open Notify
+* WhereTheISS.at
 * NOAA Space Weather Prediction Center
 
-### Air
+## Aviation
 
 * OpenSky Network
 
-### Earth & Disaster
+## Earth & Disaster
 
 * USGS Earthquake Feed
 * NASA EONET
 * GDACS
 * Weather.gov
 
-### Cyber Intelligence
+## Cyber Intelligence
 
-* NVD CVE API
-* CISA KEV Feed
+* National Vulnerability Database (NVD)
+* CISA KEV Catalog
 * Ransomware.live
-* CISA Cybersecurity Advisories
-* Have I Been Pwned
+* Public Threat Intelligence Sources
 
-### Network Intelligence
+## Network Intelligence
 
-* Cloudflare Radar
+* Internet Outage Monitoring Sources
 * BGP Monitoring Sources
 
 ---
 
-## Installation
+# Installation
 
-Clone the repository:
+## Requirements
+
+Install:
+
+* Node.js 20+
+* npm
+* Ollama
+
+---
+
+## Clone Repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/global-situation-dashboard.git
+cd global-situation-dashboard
 ```
 
-Install dependencies:
+---
+
+## Install Frontend Dependencies
 
 ```bash
 npm install
 ```
 
-Run development server:
+---
+
+## Install Ollama
+
+Download and install Ollama.
+
+Pull the required model:
+
+```bash
+ollama pull llama3.1
+```
+
+---
+
+## Start Ollama
+
+```bash
+ollama run llama3.1
+```
+
+---
+
+## Start AI Backend
+
+```bash
+node server/index.js
+```
+
+Expected output:
+
+```text
+Local AI assistant running on http://localhost:5050
+```
+
+---
+
+## Start Dashboard
 
 ```bash
 npm run dev
@@ -403,55 +530,49 @@ http://localhost:5173
 
 ---
 
-## Development Progress
+# Current Development Status (Completed)
 
-### Phase 1 ✅
+## Phase 1 Complete
 
 * Interactive Globe
 * Country Borders
 * Event Markers
-* Live Earthquake Feed
-* Live ISS Tracking
-* Event Details Panel
+* Earthquake Monitoring
+* ISS Tracking
 
-### Phase 2 ✅
+## Phase 2 Complete
 
-* Space Weather Monitoring
-* ISS Orbital Calculations
-* Weather Alerts
+* Space Weather
 * Volcano Monitoring
+* Weather Alerts
 * Event Filtering
-* ISS Crew Monitoring
+* ISS Crew Tracking
 
-### Phase 3 ✅
+## Phase 3 Complete
 
 * CVE Monitoring
-* Known Exploited Vulnerabilities
-* Threat Intelligence Monitoring
+* KEV Monitoring
+* Threat Intelligence
 * Ransomware Monitoring
 * Data Breach Monitoring
 * Global Risk Assessment
 * Feed Health Monitoring
-* Top Threat Analysis
-* Intelligence Summary Dashboard
 
-### Phase 4 ✅
+## Phase 4 Complete
 
 * Threat Timeline
 * Correlation Engine
-* Threat Prioritization
 * News Ticker
 * Aircraft Tracking
 * Maritime Tracking
 * Threat Heatmap
-* Correlation Reasoning
-* Multi-Domain Awareness
+* Local AI Intelligence Assistant
 
 ---
 
-## Future Enhancements & Ideas
+# Future Enhancements & Ideas
 
-### Intelligence & Analytics
+## Intelligence & Analytics
 
 * Historical Event Playback
 * Alert Subscriptions
@@ -464,15 +585,14 @@ http://localhost:5173
 * Threat Actor Tracking
 * Country Risk Scoring
 
-### Disaster Monitoring
+## Disaster Monitoring
 
 * Wildfire Monitoring
 * Hurricane Tracking
 * Flood Monitoring
 * Tsunami Monitoring
-* Emergency Response Intelligence
 
-### Air & Maritime
+## Air & Maritime
 
 * Real-Time AIS Integration
 * Expanded Aircraft Tracking
@@ -480,7 +600,7 @@ http://localhost:5173
 * Port Activity Monitoring
 * Shipping Route Analysis
 
-### User Experience
+## User Experience
 
 * User Configurable Dashboards
 * Multi-User Support
@@ -488,30 +608,21 @@ http://localhost:5173
 * Custom Alert Rules
 * Mobile Dashboard Support
 
-### Infrastructure
+## Infrastructure
 
 * Docker Deployment
 * Kubernetes Deployment
-* Self-Hosted Package
 * Authentication & User Management
 * External API Access
 
-### Artificial Intelligence
+---
 
-* Event Classification Models
-* Threat Prediction Models
-* AI Situation Reports
-* Natural Language Intelligence Summaries
-* Anomaly Detection Engine
+# Contributing
+
+Contributions, feature requests, bug reports, and suggestions are welcome.
 
 ---
 
-## Contributing
-
-Contributions, feature requests, ideas, and pull requests are welcome.
-
----
-
-## License
+# License
 
 MIT License
