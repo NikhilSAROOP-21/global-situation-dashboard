@@ -7,12 +7,25 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
 *.local
 
-# Editor directories and files
+# Cache
+.vite
+.cache
+coverage
+
+# Editor files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,18 +35,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-
-# Environment variables / secrets
-.env
-.env.*
-!.env.example
-
-# Local AI / server config
-server/.env
-server/.env.*
-
-# Cache
-.vite
-.cache
-coverage
