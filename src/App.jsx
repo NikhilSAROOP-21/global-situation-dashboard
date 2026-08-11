@@ -59,6 +59,8 @@ function App() {
   const [assistantQuestion, setAssistantQuestion] = useState('')
   const [assistantAnswer, setAssistantAnswer] = useState('')
   const [assistantLoading, setAssistantLoading] = useState(false)
+  const [assistantMode, setAssistantMode] = useState('deterministic')
+  const [assistantMetadata, setAssistantMetadata] = useState(null)
 
 
 
@@ -1368,6 +1370,7 @@ const askDashboardAssistant = async () => {
 
   setAssistantLoading(true)
   setAssistantAnswer('')
+  setAssistantMetadata(null)
 
   const dashboardData = {
     globalRiskLevel,
@@ -1391,15 +1394,22 @@ const askDashboardAssistant = async () => {
       },
       body: JSON.stringify({
         question: assistantQuestion,
-        dashboard: dashboardData
+        dashboard: dashboardData,
+        mode: assistantMode
       })
     })
 
     const data = await response.json()
 
     setAssistantAnswer(data.answer || data.error || 'No answer returned.')
+    setAssistantMetadata({
+      mode: data.mode || assistantMode,
+      model: data.model || 'llama3.1',
+      generationOptions: data.generationOptions || {}
+    })
   } catch (error) {
     setAssistantAnswer('Could not connect to local AI assistant.')
+    setAssistantMetadata(null)
   } finally {
     setAssistantLoading(false)
   }
@@ -1849,6 +1859,53 @@ const askDashboardAssistant = async () => {
 <div className="sectionTitle">AI DASHBOARD ASSISTANT</div>
 
 <div className="card detailCard">
+  <label
+    htmlFor="assistantMode"
+    style={{
+      display: 'block',
+      marginBottom: '6px',
+      fontSize: '12px',
+      letterSpacing: '1px'
+    }}
+  >
+    LOCAL MODEL MODE
+  </label>
+
+  <select
+    id="assistantMode"
+    value={assistantMode}
+    onChange={(e) => setAssistantMode(e.target.value)}
+    disabled={assistantLoading}
+    style={{
+      width: '100%',
+      marginBottom: '8px',
+      padding: '10px',
+      color: '#ffffff',
+      background: '#080808',
+      border: '1px solid #555555'
+    }}
+  >
+    <option value="deterministic">
+      Model A - Deterministic
+    </option>
+    <option value="probabilistic">
+      Model B - Probabilistic
+    </option>
+  </select>
+
+  <div
+    style={{
+      marginBottom: '12px',
+      color: '#b8b8b8',
+      fontSize: '12px',
+      lineHeight: '1.5'
+    }}
+  >
+    {assistantMode === 'deterministic'
+      ? 'Temperature 0 and fixed seed 42. The same input should produce the same output.'
+      : 'Temperature 0.8 with sampling and a changing seed. Repeated outputs may differ.'}
+  </div>
+
   <textarea
     value={assistantQuestion}
     onChange={(e) => setAssistantQuestion(e.target.value)}
@@ -1861,13 +1918,46 @@ const askDashboardAssistant = async () => {
     onClick={askDashboardAssistant}
     disabled={assistantLoading}
   >
-    {assistantLoading ? 'Thinking...' : 'Ask AI Assistant'}
+    {assistantLoading
+      ? 'Thinking...'
+      : assistantMode === 'deterministic'
+        ? 'Run Model A'
+        : 'Run Model B'}
   </button>
 
   {assistantAnswer && (
 <div className="assistantAnswer">
   <ReactMarkdown>{assistantAnswer}</ReactMarkdown>
 </div>
+  )}
+
+  {assistantMetadata && (
+    <div
+      style={{
+        marginTop: '12px',
+        paddingTop: '10px',
+        borderTop: '1px solid #444444',
+        color: '#9fdcff',
+        fontSize: '12px',
+        lineHeight: '1.6'
+      }}
+    >
+      <div>
+        Result mode:{' '}
+        {assistantMetadata.mode === 'deterministic'
+          ? 'Model A - Deterministic'
+          : 'Model B - Probabilistic'}
+      </div>
+      <div>Local model: {assistantMetadata.model}</div>
+      <div>
+        Temperature:{' '}
+        {assistantMetadata.generationOptions.temperature ?? 'Not returned'}
+      </div>
+      <div>
+        Seed:{' '}
+        {assistantMetadata.generationOptions.seed ?? 'Not returned'}
+      </div>
+    </div>
   )}
 </div>
 

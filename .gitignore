@@ -35,3 +35,13 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+model-c-r3/.venv/
+model-c-r3/models/
+model-c-r3/__pycache__/
+
+# Model C - Tencent R3-Skill
+model-c-r3/.venv/
+model-c-r3/R3-Skill/models/
+model-c-r3/__pycache__/
+model-c-r3/*.zip
