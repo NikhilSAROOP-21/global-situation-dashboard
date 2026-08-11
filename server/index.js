@@ -2,15 +2,10 @@ import express from 'express'
 import cors from 'cors'
 
 const app = express()
-
 const PORT = 5050
 const LOCAL_MODEL = 'llama3.1'
-
-const OLLAMA_URL =
-  'http://127.0.0.1:11434/api/chat'
-
-const R3_ROUTE_URL =
-  'http://127.0.0.1:6060/api/route'
+const OLLAMA_URL = 'http://127.0.0.1:11434/api/chat'
+const R3_ROUTE_URL = 'http://127.0.0.1:6060/api/route'
 
 app.use(cors())
 app.use(express.json({ limit: '5mb' }))
@@ -26,7 +21,6 @@ const blockedKeys = new Set([
   'parent'
 ])
 
-// Remove large Three.js rendering objects from the dashboard snapshot.
 function cleanDashboardData(value, depth = 0) {
   if (depth > 6) {
     return undefined
@@ -89,8 +83,6 @@ function cleanDashboardData(value, depth = 0) {
   return undefined
 }
 
-
-// Configure deterministic and probabilistic generation.
 function getGenerationOptions(mode) {
   if (mode === 'probabilistic') {
     return {
@@ -104,7 +96,6 @@ function getGenerationOptions(mode) {
     }
   }
 
-  // Model A and Model C use deterministic generation.
   return {
     temperature: 0,
     top_k: 1,
@@ -114,8 +105,6 @@ function getGenerationOptions(mode) {
   }
 }
 
-
-// Send the question to the local Tencent R3-Skill service.
 async function selectR3Skill(question) {
   const response = await fetch(
     R3_ROUTE_URL,
@@ -144,8 +133,6 @@ async function selectR3Skill(question) {
   return data
 }
 
-
-// Check that the Node backend is running.
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
@@ -159,7 +146,6 @@ app.get('/api/health', (req, res) => {
     ]
   })
 })
-
 
 app.post(
   '/api/assistant',
@@ -203,13 +189,12 @@ app.post(
       let r3Routing = null
       let specialistGuidance = ''
 
-      // Model C first uses Tencent R3-Skill
-      // to select the appropriate analyst skill.
       if (mode === 'r3') {
         try {
-          r3Routing = await selectR3Skill(
-            question.trim()
-          )
+          r3Routing =
+            await selectR3Skill(
+              question.trim()
+            )
         } catch (error) {
           return res.status(503).json({
             error:
@@ -222,12 +207,11 @@ app.post(
 
         specialistGuidance = `
 Tencent R3-Skill selected this specialist:
-
 ${r3Routing.selectedSkill.text}
 
 Use this specialist role to focus the analysis.
 
-Do not claim that R3 generated the final wording. R3 selected the specialist skill, and the local language model produced the answer.
+Do not claim that R3 generated the final wording. R3 selected the specialist skill and the local language model produced the answer.
         `.trim()
       }
 
@@ -271,11 +255,9 @@ ${specialistGuidance}
                 role: 'user',
                 content: `
 Question:
-
 ${question.trim()}
 
 Dashboard snapshot:
-
 ${JSON.stringify(cleanedDashboard)}
                 `.trim()
               }
@@ -302,4 +284,42 @@ ${JSON.stringify(cleanedDashboard)}
         model: LOCAL_MODEL,
         generationOptions,
 
-        
+        r3Routing: r3Routing
+          ? {
+              model:
+                r3Routing.model,
+              device:
+                r3Routing.device,
+              selectedSkill:
+                r3Routing.selectedSkill,
+              candidates:
+                r3Routing.candidates
+            }
+          : null
+      })
+    } catch (error) {
+      console.error(
+        'AI assistant error:',
+        error
+      )
+
+      res.status(500).json({
+        error:
+          'Local AI assistant failed to respond',
+        details: error.message
+      })
+    }
+  }
+)
+
+app.listen(PORT, () => {
+  console.log(
+    `Local AI assistant running on http://localhost:${PORT}`
+  )
+
+  console.log(
+    'Available modes: '
+    + 'deterministic, '
+    + 'probabilistic and r3'
+  )
+})
