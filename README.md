@@ -4,7 +4,7 @@
 
 ### Local Edge AI: Deterministic vs Probabilistic vs Tencent R3-Skill
 
-![Assessment](https://img.shields.io/badge/Assessment-ICE_Task_3-2563EB?style=for-the-badge)
+![Assessment](https://img.shields.io/badge/Assessment-ICE_Tasks_3_%26_4-2563EB?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Implemented-22C55E?style=for-the-badge)
 ![Processing](https://img.shields.io/badge/AI-100%25_Local-8B5CF6?style=for-the-badge)
 ![Cloud AI](https://img.shields.io/badge/Cloud_AI-Not_Used-EF4444?style=for-the-badge)
@@ -23,6 +23,8 @@ An extension of the open-source Global Situation Dashboard that compares three l
 [Architecture](#-local-architecture) •
 [Installation](#-installation) •
 [Testing](#-model-testing) •
+[Reflection](#-ice-task-4--evaluation-and-reflection) •
+[Video](#-assessment-video) •
 [Submission](#-submission)
 
 </div>
@@ -37,7 +39,7 @@ An extension of the open-source Global Situation Dashboard that compares three l
 | **Student number** | ST10040092 |
 | **Programme** | Postgraduate Diploma in Data Analytics |
 | **Module** | PDAN8412 — Programming for Data Analytics 2 |
-| **Assessment** | ICE Task 3 — Edge AI on the Global Awareness Dashboard |
+| **Assessment** | ICE Tasks 3 and 4 — Edge AI implementation, testing and reflection |
 | **Original project** | [The-ProfessorGG/global-situation-dashboard](https://github.com/The-ProfessorGG/global-situation-dashboard) |
 | **Student fork** | [NikhilSAROOP-21/global-situation-dashboard](https://github.com/NikhilSAROOP-21/global-situation-dashboard) |
 
@@ -303,6 +305,82 @@ Keep all four services running in separate VS Code terminals.
 
 ---
 
+## 🎥 ICE Task 4 — Evaluation and Reflection
+
+### Testing Approach
+
+- The same six standard questions are asked of Model A and Model B.
+- Every question is run at least twice per model to investigate consistency.
+- The dashboard is not refreshed between comparable runs because its live-style data can change.
+- Model A and Model B use the same local Llama 3.1 model and dashboard snapshot.
+- Only their generation settings are changed, allowing a fair comparison of deterministic and probabilistic behaviour.
+
+### 🧩 Challenges on Local and Limited Hardware
+
+- Ollama, the Node.js backend and the Vite dashboard must run simultaneously in separate terminals.
+- The local Llama 3.1 model is several gigabytes in size, so its first response can take longer while the model is loaded into memory.
+- Local inference uses substantial RAM, GPU memory and processing power compared with calling a hosted AI service.
+- The dashboard originally supplied large Three.js rendering objects that were not useful for the analysis.
+- These objects caused the model to focus on JSON and rendering information instead of the intelligence question.
+- A cleaning function was therefore added to remove geometry, materials, matrices and private rendering properties before inference.
+- Testing also required care because changing live dashboard data can make two otherwise identical model requests receive different inputs.
+
+### 💡 New Learning
+
+- Deterministic and probabilistic behaviour can be produced using the same language model by changing its decoding parameters.
+- Temperature, top-k, top-p and the random seed directly influence repeatability and variation.
+- A deterministic result still requires the complete input snapshot to remain unchanged.
+- A local React interface can communicate with a Node.js backend and an Ollama model without using a cloud AI API.
+- Raw application state should be filtered before it is sent to a model so that only relevant information is included.
+- Tencent R3-Skill can route a question to a specialist analyst role before a local language model produces the final answer.
+
+### 🔧 Suggested Improvements
+
+- Save one timestamped dashboard snapshot and reuse it for every model comparison.
+- Add an automated test runner that submits all six standard questions twice and stores the responses.
+- Record response time, selected model settings, input timestamp and output for every test.
+- Display source timestamps and feed-health information beside every AI answer.
+- Add evidence links so that users can inspect the events supporting each conclusion.
+- Use calibrated confidence indicators based on feed completeness and source quality instead of relying only on the language model's self-reported confidence.
+- Consider a smaller or quantised local model when the dashboard must run on hardware with less memory.
+
+### ⚖️ Model Comparison
+
+| Comparison area | Model A — Deterministic | Model B — Probabilistic |
+|:--|:--|:--|
+| Configuration | Temperature `0` and fixed seed `42` | Temperature `0.8` and changing random seed |
+| Repeated responses | Designed to preserve the same conclusion for an unchanged snapshot | Can change wording, emphasis or recommendations |
+| Main strength | Consistent, repeatable and easier to audit | More varied language and exploratory suggestions |
+| Main limitation | Can sound rigid and repeat an unhelpful answer | Variation may reduce reliability in operational reporting |
+| Dashboard suitability | Better suited to official risk summaries and repeatable alerts | Better suited to exploratory analysis and alternative viewpoints |
+
+Model A felt more useful for a live operational risk dashboard because consistency and traceability are important when users rely on a risk summary. Model B was useful for generating alternative wording and perspectives, but changing responses may create uncertainty when the underlying evidence has not changed.
+
+### 🔄 Live Updating or a Fixed Model?
+
+- The incoming dashboard feeds should continue updating so that the model receives current event information.
+- The model should not automatically retrain itself from every incoming event.
+- Model weights, prompts and generation settings should remain versioned and controlled during normal operation.
+- Updates should be tested offline and approved before a new model version is used.
+- Continuous unsupervised learning could introduce data poisoning, misinformation, bias, model drift and unpredictable behaviour.
+- A completely static system could become outdated as terminology, threats and event patterns change.
+- A controlled approach is therefore preferable: live data with a fixed deployed model, followed by periodic reviewed updates.
+
+### 😮 Most Surprising Finding
+
+The most surprising finding was that the same local Llama 3.1 model could behave differently simply by changing temperature, sampling and seed settings. It was also surprising that the complete dashboard-aware AI workflow, including Tencent R3-Skill routing, could operate locally without sending dashboard data to a cloud AI service.
+
+### 📺 Assessment Video
+
+The assessment video demonstrates both models answering the standard question set, explains the relevant code and reflects on the implementation experience.
+
+[![Watch Assessment Video](https://img.shields.io/badge/YouTube-Watch_Assessment_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/REPLACE_WITH_VIDEO_ID)
+
+> [!IMPORTANT]
+> Replace `REPLACE_WITH_VIDEO_ID` with the real YouTube video ID after uploading the final video. The submitted video must be no longer than five minutes.
+
+---
+
 ## 🔒 Privacy and Local Processing
 
 | Control | Implementation |
@@ -393,7 +471,7 @@ git status
 
 ```powershell
 git add .
-git commit -m "Complete local AI models for ICE Task 3"
+git commit -m "Complete ICE Tasks 3 and 4"
 git push origin master
 ```
 
@@ -420,10 +498,17 @@ git push origin master
 
 ### GitHub Repository
 
-[![Open Repository](https://img.shields.io/badge/Open-ICE_Task_3_Repository-2563EB?style=for-the-badge&logo=github)](https://github.com/NikhilSAROOP-21/global-situation-dashboard)
+[![Open Repository](https://img.shields.io/badge/Open-ICE_Tasks_3_%26_4_Repository-2563EB?style=for-the-badge&logo=github)](https://github.com/NikhilSAROOP-21/global-situation-dashboard)
 
 **Submission link:**  
 [https://github.com/NikhilSAROOP-21/global-situation-dashboard](https://github.com/NikhilSAROOP-21/global-situation-dashboard)
+
+### YouTube Video
+
+[![Watch Video](https://img.shields.io/badge/YouTube-Assessment_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/REPLACE_WITH_VIDEO_ID)
+
+**Video link:**  
+[https://youtu.be/REPLACE_WITH_VIDEO_ID](https://youtu.be/REPLACE_WITH_VIDEO_ID)
 
 ---
 
