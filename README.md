@@ -1,628 +1,349 @@
-# Global Situation Dashboard
+ME.md
 
-A real-time open-source intelligence (OSINT), cyber threat monitoring, disaster awareness, network intelligence, space operations, aviation tracking, maritime awareness, and AI-assisted situational awareness platform built with React, Vite, Three.js, React Globe GL, Satellite.js, and Ollama.
 
-The Global Situation Dashboard provides a centralized operational picture of events occurring across multiple intelligence domains. By combining live cyber threat feeds, disaster monitoring systems, space tracking, network intelligence, aviation monitoring, maritime awareness, and a local AI analyst assistant, the platform delivers a single pane of glass for understanding what is happening around the world.
+Global Situation Dashboard — Local Edge AI Models
+<div align="center">
 
----
 
-# Why This Project Exists
 
-Information is often fragmented across dozens of websites, dashboards, intelligence feeds, and monitoring platforms.
 
-The goal of this project is to bring together multiple domains of intelligence into one interactive platform where users can quickly understand:
 
-* What is happening right now
-* Which threats are most important
-* How different events may be related
-* What the overall global risk level is
-* Which intelligence feeds are healthy and operational
-* What actions may require further investigation
 
-The dashboard is designed for:
 
-* Security Operations Centers (SOC)
-* Open Source Intelligence (OSINT) enthusiasts
-* Cybersecurity professionals
-* Students and researchers
-* Intelligence analysts
-* Disaster monitoring teams
-* Aviation and maritime enthusiasts
-* Anyone interested in global situational awareness
+ICE Task 3 implementation of deterministic, probabilistic and Tencent R3-Skill-assisted local AI for the Global Situation Dashboard.
 
----
+</div>
 
-# Key Features
+Student Information
+Student: Nikhil Saroop
 
-## Interactive 3D Globe
+Student number: ST10040092
 
-The platform is built around a real-time 3D globe providing a visual representation of intelligence events occurring around the world.
+Programme: Postgraduate Diploma in Data Analytics
 
-Features include:
+Module: PDAN8412 — Programming for Data Analytics 2
 
-* Interactive 3D Earth visualization
-* Automatic globe rotation
-* Country border rendering
-* Zoom controls
-* Drag navigation
-* Real-time event markers
-* Event auto-focus
-* Dynamic filtering system
-* Threat heatmap visualization
-* Multi-domain intelligence awareness
+Assessment: ICE Task 3 — Edge AI on the Global Awareness Dashboard
 
----
+Original project: The-ProfessorGG/global-situation-dashboard
 
-# Intelligence Domains
+Student fork: NikhilSAROOP-21/global-situation-dashboard
 
-## Space Domain
+Project Overview
+The dashboard provides a local, interactive view of global events such as cyber threats, earthquakes, volcanoes, aviation activity, maritime activity and other intelligence feeds.
 
-### International Space Station (ISS)
+The original React and Vite dashboard was extended with three selectable local AI modes.
 
-Live ISS tracking powered by orbital calculations and TLE propagation.
+All model inference runs on the local computer.
 
-Features:
+No cloud-hosted AI API is used.
 
-* Live ISS position
-* Orbital path visualization
-* Ground track display
-* Altitude monitoring
-* Velocity monitoring
-* Crew monitoring
-* Crew manifest display
-* Real-time updates
+Dashboard information is cleaned before it is sent to the local model so that large Three.js rendering objects are excluded.
 
-### Space Weather
+Assessment Models
+Model A — Deterministic
+Uses the local llama3.1 model through Ollama.
 
-Powered by NOAA Space Weather data.
+Uses temperature 0, top_k: 1, top_p: 1 and fixed seed 42.
 
-Features:
+The same question and unchanged dashboard snapshot should produce the same response.
 
-* KP Index monitoring
-* Geomagnetic storm awareness
-* Solar activity awareness
-* Space weather operational status
+Provides consistent analyst-style answers for repeatable testing.
 
-### Satellite Awareness
+Model B — Probabilistic
+Uses the same local llama3.1 model through Ollama.
 
-Features:
+Uses temperature 0.8, top_k: 40, top_p: 0.9 and a randomly generated seed.
 
-* Simulated Starlink constellation
-* Orbital object visualization
-* Space situational awareness
+Repeated runs can produce different wording because token sampling is enabled.
 
----
+Demonstrates the effect of controlled randomness in generative modelling.
 
-## Air Domain
+Model C — Tencent R3-Skill
+Uses Tencent R3-Skill as a local routing model.
 
-### Aircraft Tracking
+Uses an embedding model to retrieve relevant analyst skills.
 
-Powered by OpenSky Network.
+Uses a reranker to select the best specialist skill for the question.
 
-Features:
+Passes the selected specialist guidance to the local llama3.1 model.
 
-* Live aircraft monitoring
-* Aircraft position tracking
-* Callsign information
-* Origin country information
-* Altitude monitoring
-* Speed monitoring
-* Aircraft statistics
-* Air domain awareness
+Uses deterministic Llama generation after routing.
 
----
+Displays the selected skill, routing score and processing device in the dashboard.
 
-## Maritime Domain
+The R3 service was verified using CUDA on cuda:0.
 
-### Vessel Tracking
+Model C does not generate the final answer by itself. Tencent R3-Skill selects the most relevant analyst role, while the local Llama 3.1 model produces the final dashboard-based response.
 
-Features:
+Required Model Distinction Note
+Model A is deterministic because it uses temperature 0, greedy-style selection and a fixed seed, so an unchanged input should produce the same output. Model B is probabilistic because it uses temperature 0.8, sampling parameters and a changing random seed, allowing repeated runs to differ. Model C uses Tencent R3-Skill locally to select the most relevant analyst skill before the local Llama 3.1 model generates the response.
 
-* Maritime traffic visualization
-* Cargo vessel monitoring
-* Tanker monitoring
-* Port activity awareness
-* Vessel movement simulation
-* Maritime statistics
+Model C Analyst Skills
+The R3 router can select from nine dashboard-specific roles:
 
----
+Global Risk Analyst
 
-## Earth Domain
+Cyber Threat Analyst
 
-### Earthquake Monitoring
+Disaster Analyst
 
-Powered by the United States Geological Survey (USGS).
+Aviation Analyst
 
-Features:
+Maritime Analyst
 
-* Live earthquake feed
-* Magnitude reporting
-* Depth reporting
-* Global earthquake tracking
+Space Operations Analyst
 
-### Volcano Monitoring
+Network Intelligence Analyst
 
-Powered by NASA EONET.
+Threat Correlation Analyst
 
-Features:
-
-* Active volcano monitoring
-* Eruption awareness
-* Global volcanic activity tracking
-
-### Weather Monitoring
-
-Features:
-
-* Severe weather alerts
-* Active weather warnings
-* Weather event visualization
-
-### Disaster Intelligence
-
-Powered by GDACS.
-
-Features:
-
-* Global disaster monitoring
-* Emergency event tracking
-* Disaster awareness visualization
-
----
-
-## Cyber Threat Intelligence
-
-### CVE Monitoring
-
-Powered by the National Vulnerability Database (NVD).
-
-Features:
-
-* Live CVE monitoring
-* CVSS scoring
-* Critical vulnerability identification
-* Severity prioritization
-
-### Known Exploited Vulnerabilities (KEV)
-
-Powered by CISA.
-
-Features:
-
-* Active exploitation monitoring
-* Known exploited vulnerability tracking
-* High-priority threat awareness
-
-### Threat Intelligence
-
-Features:
-
-* Cybersecurity advisory monitoring
-* Threat intelligence tracking
-* Security event monitoring
-
-### Ransomware Monitoring
-
-Powered by Ransomware.live.
-
-Features:
-
-* Victim monitoring
-* Campaign awareness
-* Sector tracking
-* Incident monitoring
-
-### Data Breach Monitoring
-
-Features:
-
-* Public breach intelligence
-* Records exposure awareness
-* Breach event tracking
-* Breach monitoring
-
----
-
-## Network Intelligence
-
-### Internet Outage Monitoring
-
-Features:
-
-* Regional outage awareness
-* Connectivity disruption monitoring
-* Network event tracking
-
-### BGP Monitoring
-
-Features:
-
-* BGP anomaly monitoring
-* Route hijack awareness
-* Internet routing visibility
-
----
-
-# Intelligence Operations
-
-## Threat Timeline
-
-The timeline provides a chronological view of intelligence events.
-
-Supported views:
-
-* Last Hour
-* Last 24 Hours
-* Last 7 Days
-* Last 30 Days
-* Last Year
-
-Features:
-
-* Historical event analysis
-* Event filtering
-* Timeline navigation
-* Event prioritization
-
----
-
-## Correlation Engine
-
-The correlation engine attempts to identify relationships between intelligence events.
-
-Features:
-
-* Threat correlation
-* CVE correlation
-* KEV matching
-* Threat intelligence matching
-* Confidence scoring
-* Severity scoring
-* Correlation reasoning
-* Threat prioritization
-
----
-
-## Threat Heatmap
-
-The heatmap layer visualizes concentrations of activity across the globe.
-
-Threat levels are calculated using:
-
-* CVEs
-* KEVs
-* Threat intelligence
-* Data breaches
-* Ransomware activity
-* Internet outages
-* BGP anomalies
-* Natural disasters
-
----
-
-## News Ticker
-
-A live intelligence ticker provides continuously updated event information across the platform.
-
-Includes:
-
-* Earthquakes
-* Cyber threats
-* KEV additions
-* Data breaches
-* Threat intelligence updates
-* Ransomware activity
-
----
-
-## Global Risk Assessment
-
-The platform calculates an overall global risk score.
-
-Risk Levels:
-
-* LOW
-* ELEVATED
-* HIGH
-* CRITICAL
-
-Factors include:
-
-* Critical vulnerabilities
-* Active KEVs
-* Ransomware incidents
-* Threat intelligence alerts
-* Data breaches
-* Network events
-
----
-
-## Feed Health Monitoring
-
-Feed health monitoring provides operational awareness of platform data sources.
-
-Monitored Feeds:
-
-* ISS Tracking
-* Space Weather
-* Earthquakes
-* Volcanoes
-* Aircraft Tracking
-* Maritime Tracking
-* CVE Feed
-* KEV Feed
-* Threat Intelligence Feed
-* Ransomware Feed
-* Data Breach Feed
-* Internet Outage Feed
-* BGP Monitoring Feed
-
----
-
-# AI Intelligence Assistant
-
-One of the core features of the platform is the built-in AI Intelligence Assistant.
-
-The assistant is powered locally using Ollama and can answer questions using live dashboard data.
-
-Unlike traditional AI chatbots, the assistant receives structured intelligence data directly from the dashboard.
-
-Example Questions:
-
-* What is the current global risk level?
-* What is the top threat right now?
-* Summarize the last 24 hours.
-* Are there any correlated threats?
-* How many aircraft are currently being tracked?
-* What are the most significant cyber events?
-* Explain why the risk level is elevated.
-
-Features:
-
-* Local AI processing
-* No cloud dependency
-* No API costs
-* Dashboard-aware responses
-* Analyst-style summaries
-* Natural language interaction
-
----
-
-# Technology Stack
-
-## Frontend
-
-* React
-* Vite
-* React Globe GL
-* Three.js
-
-## Geospatial Processing
-
-* GeoJSON
-* TopoJSON
-
-## Orbital Processing
-
-* Satellite.js
-* TLE Propagation
-
-## Backend
-
-* Node.js
-* Express
-* CORS
-
-## Artificial Intelligence
-
-* Ollama
-* Llama 3.1
-
----
-
-# Data Sources
-
-## Space
-
-* Open Notify
-* WhereTheISS.at
-* NOAA Space Weather Prediction Center
-
-## Aviation
-
-* OpenSky Network
-
-## Earth & Disaster
-
-* USGS Earthquake Feed
-* NASA EONET
-* GDACS
-* Weather.gov
-
-## Cyber Intelligence
-
-* National Vulnerability Database (NVD)
-* CISA KEV Catalog
-* Ransomware.live
-* Public Threat Intelligence Sources
-
-## Network Intelligence
-
-* Internet Outage Monitoring Sources
-* BGP Monitoring Sources
-
----
-
-# Installation
-
-## Requirements
-
-Install:
-
-* Node.js 20+
-* npm
-* Ollama
-
----
-
-## Clone Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/global-situation-dashboard.git
+Feed Health Analyst
+
+Local Architecture
+React dashboard (port 5173)
+        |
+        v
+Node AI backend (port 5050)
+        |
+        |---- Model A/B ----> Ollama + Llama 3.1 (port 11434)
+        |
+        |---- Model C ------> Tencent R3-Skill service (port 6060)
+                               |
+                               v
+                         Selected analyst skill
+                               |
+                               v
+                         Ollama + Llama 3.1
+Repository Structure
+global-situation-dashboard
+├── public
+├── server
+│   └── index.js
+├── src
+│   ├── assets
+│   ├── App.css
+│   ├── App.jsx
+│   ├── index.css
+│   └── main.jsx
+├── model-c-r3
+│   ├── .venv                  # Local only; excluded from Git
+│   └── R3-Skill
+│       ├── data
+│       ├── models             # Local weights; excluded from Git
+│       ├── dashboard_skills.jsonl
+│       ├── infer.py
+│       ├── r3_service.py
+│       ├── requirements.txt
+│       └── README.md
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── README.md
+└── vite.config.js
+Requirements
+Git
+
+Node.js 20 or later
+
+npm
+
+Ollama
+
+Local Ollama model: llama3.1
+
+Python 3.13
+
+Tencent R3-Skill dependencies
+
+NVIDIA GPU and CUDA are optional but recommended for Model C
+
+Installation
+1. Clone the Student Fork
+git clone https://github.com/NikhilSAROOP-21/global-situation-dashboard.git
 cd global-situation-dashboard
-```
-
----
-
-## Install Frontend Dependencies
-
-```bash
+2. Install Frontend and Node Dependencies
 npm install
-```
-
----
-
-## Install Ollama
-
-Download and install Ollama.
-
-Pull the required model:
-
-```bash
+3. Pull the Local Llama Model
 ollama pull llama3.1
-```
+Confirm that the model is installed:
 
----
+ollama list
+4. Create the Model C Python Environment
+py -3.13 -m venv .\model-c-r3\.venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+.\model-c-r3\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r .\model-c-r3\R3-Skill\requirements.txt
+5. Prepare Tencent R3-Skill
+Follow the included model-c-r3/R3-Skill/README.md instructions for the official Tencent R3-Skill setup.
 
-## Start Ollama
+Place the local embedding weights in model-c-r3/R3-Skill/models/r3-embedding.
 
-```bash
-ollama run llama3.1
-```
+Place the local reranker weights in model-c-r3/R3-Skill/models/r3-reranker.
 
----
+Keep model weights out of Git because they are large and reproducible from the official source.
 
-## Start AI Backend
+Running the Complete Project
+The following four services must remain running in separate VS Code terminals.
 
-```bash
-node server/index.js
-```
+Terminal 1 — Start Ollama
+ollama serve
+Ollama listens on:
 
-Expected output:
+http://127.0.0.1:11434
+Terminal 2 — Start Tencent R3-Skill
+Run this from the repository root:
 
-```text
-Local AI assistant running on http://localhost:5050
-```
+& ".\model-c-r3\.venv\Scripts\python.exe" ".\model-c-r3\R3-Skill\r3_service.py"
+Model C listens on:
 
----
+http://127.0.0.1:6060
+Health check:
 
-## Start Dashboard
+http://127.0.0.1:6060/api/health
+Terminal 3 — Start the Node AI Backend
+node .\server\index.js
+The backend listens on:
 
-```bash
+http://localhost:5050
+Health check:
+
+http://localhost:5050/api/health
+The message Cannot GET / at http://localhost:5050/ is expected because the backend exposes API routes rather than a home page.
+
+Terminal 4 — Start the Dashboard
 npm run dev
-```
-
 Open:
 
-```text
 http://localhost:5173
-```
+API Routes
+Node Backend
+GET /api/health — checks the Node AI backend and lists available modes.
 
----
+POST /api/assistant — processes a dashboard question using Model A, B or C.
 
-# Current Development Status (Completed)
+Tencent R3-Skill Service
+GET /api/health — confirms the R3 models, device and number of skills.
 
-## Phase 1 Complete
+POST /api/route — returns the selected analyst skill and ranked candidates.
 
-* Interactive Globe
-* Country Borders
-* Event Markers
-* Earthquake Monitoring
-* ISS Tracking
+Testing the Models
+Model A Test
+Select Model A - Deterministic.
 
-## Phase 2 Complete
+Enter the following question:
 
-* Space Weather
-* Volcano Monitoring
-* Weather Alerts
-* Event Filtering
-* ISS Crew Tracking
+Give a two-sentence summary of the current global risk level.
+Run it twice while the dashboard snapshot remains unchanged.
 
-## Phase 3 Complete
+Confirm temperature 0, seed 42 and matching output.
 
-* CVE Monitoring
-* KEV Monitoring
-* Threat Intelligence
-* Ransomware Monitoring
-* Data Breach Monitoring
-* Global Risk Assessment
-* Feed Health Monitoring
+Model B Test
+Select Model B - Probabilistic.
 
-## Phase 4 Complete
+Enter the same question used for Model A.
 
-* Threat Timeline
-* Correlation Engine
-* News Ticker
-* Aircraft Tracking
-* Maritime Tracking
-* Threat Heatmap
-* Local AI Intelligence Assistant
+Run it twice.
 
----
+Confirm temperature 0.8, changing seeds and differences in wording.
 
-# Future Enhancements & Ideas
+Model C Tests
+Global-risk routing:
 
-## Intelligence & Analytics
+What is causing the current global risk level?
+Expected selected skill: Global Risk Analyst
 
-* Historical Event Playback
-* Alert Subscriptions
-* Export Intelligence Reports
-* Automated Threat Assessment
-* Predictive Intelligence Models
-* AI-Assisted Event Classification
-* Geopolitical Intelligence Monitoring
-* Conflict Monitoring
-* Threat Actor Tracking
-* Country Risk Scoring
+Cyber-threat routing:
 
-## Disaster Monitoring
+Which critical CVE requires urgent investigation?
+Expected selected skill: Cyber Threat Analyst
 
-* Wildfire Monitoring
-* Hurricane Tracking
-* Flood Monitoring
-* Tsunami Monitoring
+Disaster routing:
 
-## Air & Maritime
+Summarise the most significant earthquakes and volcanoes currently shown.
+Expected selected skill: Disaster Analyst
 
-* Real-Time AIS Integration
-* Expanded Aircraft Tracking
-* Military Aircraft Monitoring
-* Port Activity Monitoring
-* Shipping Route Analysis
+Verified Local Results
+The dashboard loads successfully at port 5173 and displays live-style global events.
 
-## User Experience
+The Node backend exposes deterministic, probabilistic and R3 modes.
 
-* User Configurable Dashboards
-* Multi-User Support
-* Saved Dashboard Layouts
-* Custom Alert Rules
-* Mobile Dashboard Support
+Model A returns dashboard-aware deterministic responses.
 
-## Infrastructure
+Model B uses sampling and a changing random seed.
 
-* Docker Deployment
-* Kubernetes Deployment
-* Authentication & User Management
-* External API Access
+Model C successfully selected Global Risk Analyst for a global-risk question.
 
----
+Model C successfully selected Cyber Threat Analyst for a critical-CVE question.
 
-# Contributing
+Model C reported its device as cuda:0 during testing.
 
-Contributions, feature requests, bug reports, and suggestions are welcome.
+Because dashboard feeds can change between requests, deterministic comparisons should use the same question and an unchanged dashboard snapshot.
 
----
+Privacy and Local Processing
+All AI inference runs locally.
 
-# License
+No external cloud AI service is called.
 
-MIT License
+Ollama runs on the local machine.
+
+Tencent R3-Skill runs through a local Python service.
+
+The dashboard snapshot is filtered before inference.
+
+Three.js geometry, materials, matrices and private rendering properties are removed from the model input.
+
+Troubleshooting
+Dashboard does not load
+npm run dev
+Then open http://localhost:5173.
+
+The interface says it cannot connect to the local AI assistant
+node .\server\index.js
+Confirm http://localhost:5050/api/health returns JSON.
+
+Model C is unavailable
+& ".\model-c-r3\.venv\Scripts\python.exe" ".\model-c-r3\R3-Skill\r3_service.py"
+Confirm http://127.0.0.1:6060/api/health returns JSON.
+
+Ollama does not respond
+ollama serve
+Then confirm the model exists:
+
+ollama list
+Backend page shows Cannot GET /
+Use the health endpoint instead:
+
+http://localhost:5050/api/health
+Final Validation
+Run the production build before submission:
+
+npm run build
+Check the files that will be committed:
+
+git status
+Commit and push the completed work:
+
+git add .
+git commit -m "Complete local AI models for ICE Task 3"
+git push origin master
+Attribution
+The dashboard is based on the open-source Global Situation Dashboard created by The-ProfessorGG.
+
+The local AI extension, deterministic/probabilistic controls, dashboard-data cleaning, Tencent R3-Skill routing service and three-model user interface were added for this assessment.
+
+Tencent R3-Skill remains subject to its original project licence and attribution requirements.
+
+The original dashboard is distributed under the MIT License.
+
+Submission
+Submit the following GitHub repository link:
+
+https://github.com/NikhilSAROOP-21/global-situation-dashboard
+
+<div align="center">
+
+Prepared for PDAN8412 — Programming for Data Analytics 2.
+
+</div>
