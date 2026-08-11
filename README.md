@@ -1,121 +1,117 @@
-ME.md
-
-
-Global Situation Dashboard — Local Edge AI Models
 <div align="center">
-
-
-
-
-
-
-
-ICE Task 3 implementation of deterministic, probabilistic and Tencent R3-Skill-assisted local AI for the Global Situation Dashboard.
-
+🌍 Global Situation Dashboard
+Local Edge AI: Deterministic vs Probabilistic vs Tencent R3-Skill
+![Assessment](https://img.shields.io/badge/Assessment-ICE_Task_3-2563EB?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Implemented-22C55E?style=for-the-badge)
+![Processing](https://img.shields.io/badge/AI-100%25_Local-8B5CF6?style=for-the-badge)
+![Cloud AI](https://img.shields.io/badge/Cloud_AI-Not_Used-EF4444?style=for-the-badge)
+![React](https://img.shields.io/badge/React-Dashboard-61DAFB?style=flat-square&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=flat-square&logo=nodedotjs&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-Llama_3.1-111827?style=flat-square)
+![Python](https://img.shields.io/badge/Python-R3_Service-3776AB?style=flat-square&logo=python&logoColor=white)
+![CUDA](https://img.shields.io/badge/CUDA-Enabled-76B900?style=flat-square&logo=nvidia&logoColor=white)
+An extension of the open-source Global Situation Dashboard that compares three locally operated AI approaches using live-style global intelligence data.
+Overview •
+Models •
+Architecture •
+Installation •
+Testing •
+Submission
 </div>
-
-Student Information
-Student: Nikhil Saroop
-
-Student number: ST10040092
-
-Programme: Postgraduate Diploma in Data Analytics
-
-Module: PDAN8412 — Programming for Data Analytics 2
-
-Assessment: ICE Task 3 — Edge AI on the Global Awareness Dashboard
-
-Original project: The-ProfessorGG/global-situation-dashboard
-
-Student fork: NikhilSAROOP-21/global-situation-dashboard
-
-Project Overview
-The dashboard provides a local, interactive view of global events such as cyber threats, earthquakes, volcanoes, aviation activity, maritime activity and other intelligence feeds.
-
-The original React and Vite dashboard was extended with three selectable local AI modes.
-
-All model inference runs on the local computer.
-
-No cloud-hosted AI API is used.
-
-Dashboard information is cleaned before it is sent to the local model so that large Three.js rendering objects are excluded.
-
-Assessment Models
-Model A — Deterministic
-Uses the local llama3.1 model through Ollama.
-
-Uses temperature 0, top_k: 1, top_p: 1 and fixed seed 42.
-
-The same question and unchanged dashboard snapshot should produce the same response.
-
-Provides consistent analyst-style answers for repeatable testing.
-
-Model B — Probabilistic
-Uses the same local llama3.1 model through Ollama.
-
-Uses temperature 0.8, top_k: 40, top_p: 0.9 and a randomly generated seed.
-
-Repeated runs can produce different wording because token sampling is enabled.
-
-Demonstrates the effect of controlled randomness in generative modelling.
-
-Model C — Tencent R3-Skill
-Uses Tencent R3-Skill as a local routing model.
-
+---
+👨‍🎓 Student Information
+Field	Details
+Student	Nikhil Saroop
+Student number	ST10040092
+Programme	Postgraduate Diploma in Data Analytics
+Module	PDAN8412 — Programming for Data Analytics 2
+Assessment	ICE Task 3 — Edge AI on the Global Awareness Dashboard
+Original project	The-ProfessorGG/global-situation-dashboard
+Student fork	NikhilSAROOP-21/global-situation-dashboard
+---
+📌 Project Overview
+The dashboard presents a local interactive view of multiple intelligence domains:
+Domain	Examples
+🌐 Global risk	Risk level, risk score and prioritised threats
+🛡️ Cybersecurity	CVEs, CVSS scores, KEVs, ransomware and data breaches
+🌋 Disasters	Earthquakes, volcanoes and severe events
+✈️ Aviation	Aircraft locations, speed, altitude and callsigns
+🚢 Maritime	Vessel activity, ports, cargo ships and tankers
+🛰️ Space	ISS activity, satellites and space weather
+📡 Networks	Internet outages, BGP anomalies and connectivity risks
+Project Extension
+Added three selectable local AI modes to the React interface.
+Connected the dashboard to a local Node.js AI backend.
+Used Ollama and Llama 3.1 for local language generation.
+Added a local Tencent R3-Skill routing service.
+Removed large Three.js rendering objects before sending dashboard data to the model.
+Displayed model parameters and R3 routing evidence in the interface.
+Kept all AI processing on the local computer with no cloud AI calls.
+---
+🧠 Model Comparison
+Model	Type	Local technology	Key configuration	Expected behaviour
+![A](https://img.shields.io/badge/Model_A-Deterministic-2563EB?style=flat-square)	Deterministic generation	Ollama + Llama 3.1	`temperature: 0`<br>`top_k: 1`<br>`top_p: 1`<br>`seed: 42`	Same question and unchanged snapshot should produce the same response
+![B](https://img.shields.io/badge/Model_B-Probabilistic-F59E0B?style=flat-square)	Sampled generation	Ollama + Llama 3.1	`temperature: 0.8`<br>`top_k: 40`<br>`top_p: 0.9`<br>random seed	Repeated runs can produce different wording
+![C](https://img.shields.io/badge/Model_C-Tencent_R3--Skill-8B5CF6?style=flat-square)	Specialist-skill routing	Tencent R3-Skill + Ollama + Llama 3.1	embedding retrieval<br>reranking<br>deterministic generation	Selects the most relevant analyst skill before producing an answer
+🔵 Model A — Deterministic
+Uses the local `llama3.1` model through Ollama.
+Uses temperature `0` and a fixed seed of `42`.
+Supports repeatable analyst-style output.
+Provides a controlled comparison against the probabilistic model.
+🟠 Model B — Probabilistic
+Uses the same local `llama3.1` model.
+Enables sampling with temperature `0.8`.
+Generates a different random seed for each request.
+Can vary its wording even when the user repeats the same question.
+🟣 Model C — Tencent R3-Skill
+Runs Tencent R3-Skill locally as a specialist router.
 Uses an embedding model to retrieve relevant analyst skills.
-
-Uses a reranker to select the best specialist skill for the question.
-
-Passes the selected specialist guidance to the local llama3.1 model.
-
-Uses deterministic Llama generation after routing.
-
-Displays the selected skill, routing score and processing device in the dashboard.
-
-The R3 service was verified using CUDA on cuda:0.
-
-Model C does not generate the final answer by itself. Tencent R3-Skill selects the most relevant analyst role, while the local Llama 3.1 model produces the final dashboard-based response.
-
+Uses a reranker to select the best specialist.
+Sends the selected specialist guidance to the local Llama 3.1 model.
+Displays the selected skill, routing score and processing device.
+Was verified locally using CUDA device `cuda:0`.
+> [!IMPORTANT]
+> Model C does not produce the final wording by itself. Tencent R3-Skill selects the most relevant analyst role, and the local Llama 3.1 model then generates the dashboard-based response.
 Required Model Distinction Note
-Model A is deterministic because it uses temperature 0, greedy-style selection and a fixed seed, so an unchanged input should produce the same output. Model B is probabilistic because it uses temperature 0.8, sampling parameters and a changing random seed, allowing repeated runs to differ. Model C uses Tencent R3-Skill locally to select the most relevant analyst skill before the local Llama 3.1 model generates the response.
+> Model A is deterministic because it uses temperature 0, greedy-style selection and a fixed seed, so an unchanged input should produce the same output. Model B is probabilistic because it uses temperature 0.8, sampling parameters and a changing random seed, allowing repeated runs to differ. Model C uses Tencent R3-Skill locally to select the most relevant analyst skill before the local Llama 3.1 model generates the response.
+---
+🎯 Model C Analyst Skills
+#	Analyst skill	Focus area
+1	🌐 Global Risk Analyst	Risk level, risk score, top threat and contributing events
+2	🛡️ Cyber Threat Analyst	CVEs, CVSS, KEVs, ransomware and breaches
+3	🌋 Disaster Analyst	Earthquakes, volcanoes and severe environmental events
+4	✈️ Aviation Analyst	Aircraft activity, callsigns, altitude and speed
+5	🚢 Maritime Analyst	Vessel movements, ports, cargo ships and tankers
+6	🛰️ Space Operations Analyst	ISS, satellites, orbital data and space weather
+7	📡 Network Intelligence Analyst	Internet outages, BGP anomalies and routing risks
+8	🔗 Threat Correlation Analyst	Related events, confidence scores and cascading risks
+9	❤️ Feed Health Analyst	Feed availability, stale information and reliability
+---
+🏗️ Local Architecture
+```mermaid
+flowchart TD
+    UI["React Dashboard<br/>Port 5173"] --> API["Node AI Backend<br/>Port 5050"]
+    API -->|"Model A or B"| OLLAMA["Ollama + Llama 3.1<br/>Port 11434"]
+    API -->|"Model C question"| R3["Tencent R3-Skill<br/>Port 6060"]
+    R3 --> SKILL["Selected Analyst Skill"]
+    SKILL --> OLLAMA
 
-Model C Analyst Skills
-The R3 router can select from nine dashboard-specific roles:
-
-Global Risk Analyst
-
-Cyber Threat Analyst
-
-Disaster Analyst
-
-Aviation Analyst
-
-Maritime Analyst
-
-Space Operations Analyst
-
-Network Intelligence Analyst
-
-Threat Correlation Analyst
-
-Feed Health Analyst
-
-Local Architecture
-React dashboard (port 5173)
-        |
-        v
-Node AI backend (port 5050)
-        |
-        |---- Model A/B ----> Ollama + Llama 3.1 (port 11434)
-        |
-        |---- Model C ------> Tencent R3-Skill service (port 6060)
-                               |
-                               v
-                         Selected analyst skill
-                               |
-                               v
-                         Ollama + Llama 3.1
-Repository Structure
+    style UI fill:#0EA5E9,color:#ffffff,stroke:#0284C7
+    style API fill:#22C55E,color:#ffffff,stroke:#16A34A
+    style OLLAMA fill:#F59E0B,color:#111827,stroke:#D97706
+    style R3 fill:#8B5CF6,color:#ffffff,stroke:#7C3AED
+    style SKILL fill:#EC4899,color:#ffffff,stroke:#DB2777
+```
+Local Services
+Service	Port	Purpose	Health/status
+![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?style=flat-square)	`5173`	Dashboard interface	`http://localhost:5173`
+![Node](https://img.shields.io/badge/Node-AI_Backend-339933?style=flat-square)	`5050`	Cleans data and coordinates models	`http://localhost:5050/api/health`
+![Ollama](https://img.shields.io/badge/Ollama-Llama_3.1-111827?style=flat-square)	`11434`	Local language-model inference	`http://127.0.0.1:11434`
+![R3](https://img.shields.io/badge/Tencent-R3--Skill-8B5CF6?style=flat-square)	`6060`	Specialist-skill routing	`http://127.0.0.1:6060/api/health`
+---
+📁 Repository Structure
+```text
 global-situation-dashboard
 ├── public
 ├── server
@@ -141,209 +137,166 @@ global-situation-dashboard
 ├── package-lock.json
 ├── README.md
 └── vite.config.js
-Requirements
-Git
-
-Node.js 20 or later
-
-npm
-
-Ollama
-
-Local Ollama model: llama3.1
-
-Python 3.13
-
-Tencent R3-Skill dependencies
-
-NVIDIA GPU and CUDA are optional but recommended for Model C
-
-Installation
+```
+---
+✅ Requirements
+Requirement	Recommended version	Check command
+Git	Current stable version	`git --version`
+Node.js	20 or later	`node --version`
+npm	Compatible with Node.js	`npm --version`
+Ollama	Current stable version	`ollama --version`
+Llama	`llama3.1`	`ollama list`
+Python	3.13	`python --version`
+CUDA	Optional, recommended for R3	Check in R3 health response
+---
+🚀 Installation
 1. Clone the Student Fork
+```powershell
 git clone https://github.com/NikhilSAROOP-21/global-situation-dashboard.git
 cd global-situation-dashboard
-2. Install Frontend and Node Dependencies
+```
+2. Install the Node Dependencies
+```powershell
 npm install
-3. Pull the Local Llama Model
+```
+3. Install the Local Llama Model
+```powershell
 ollama pull llama3.1
-Confirm that the model is installed:
-
 ollama list
-4. Create the Model C Python Environment
+```
+4. Create the Model C Environment
+```powershell
 py -3.13 -m venv .\model-c-r3\.venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 .\model-c-r3\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r .\model-c-r3\R3-Skill\requirements.txt
+```
 5. Prepare Tencent R3-Skill
-Follow the included model-c-r3/R3-Skill/README.md instructions for the official Tencent R3-Skill setup.
-
-Place the local embedding weights in model-c-r3/R3-Skill/models/r3-embedding.
-
-Place the local reranker weights in model-c-r3/R3-Skill/models/r3-reranker.
-
-Keep model weights out of Git because they are large and reproducible from the official source.
-
-Running the Complete Project
-The following four services must remain running in separate VS Code terminals.
-
-Terminal 1 — Start Ollama
-ollama serve
-Ollama listens on:
-
-http://127.0.0.1:11434
-Terminal 2 — Start Tencent R3-Skill
-Run this from the repository root:
-
-& ".\model-c-r3\.venv\Scripts\python.exe" ".\model-c-r3\R3-Skill\r3_service.py"
-Model C listens on:
-
-http://127.0.0.1:6060
-Health check:
-
-http://127.0.0.1:6060/api/health
-Terminal 3 — Start the Node AI Backend
-node .\server\index.js
-The backend listens on:
-
-http://localhost:5050
-Health check:
-
-http://localhost:5050/api/health
-The message Cannot GET / at http://localhost:5050/ is expected because the backend exposes API routes rather than a home page.
-
-Terminal 4 — Start the Dashboard
+Follow the included `model-c-r3/R3-Skill/README.md` instructions.
+Store embedding weights in `model-c-r3/R3-Skill/models/r3-embedding`.
+Store reranker weights in `model-c-r3/R3-Skill/models/r3-reranker`.
+Keep the large model weights and virtual environment out of Git.
+---
+▶️ Running the Complete Project
+Keep all four services running in separate VS Code terminals.
+Terminal	Service	Command	Successful result
+1	Ollama	`ollama serve`	Listening on port `11434`
+2	Tencent R3-Skill	`& ".\model-c-r3\.venv\Scripts\python.exe" ".\model-c-r3\R3-Skill\r3_service.py"`	Model C running on port `6060`
+3	Node backend	`node .\server\index.js`	AI assistant running on port `5050`
+4	Vite dashboard	`npm run dev`	Dashboard available on port `5173`
+Service Checks
+Check	Address	Expected result
+Dashboard	`http://localhost:5173`	Interactive globe and event panels
+Node backend	`http://localhost:5050/api/health`	JSON listing `deterministic`, `probabilistic` and `r3`
+R3 service	`http://127.0.0.1:6060/api/health`	JSON with status, skill count and device
+> [!NOTE]
+> `Cannot GET /` at `http://localhost:5050/` is expected. The Node backend exposes API routes rather than a web home page, so use `/api/health`.
+---
+🔌 API Routes
+Service	Method	Route	Purpose
+Node	`GET`	`/api/health`	Confirms the backend and lists model modes
+Node	`POST`	`/api/assistant`	Runs Model A, Model B or Model C
+R3	`GET`	`/api/health`	Confirms R3 models, skills and device
+R3	`POST`	`/api/route`	Selects and ranks analyst skills
+---
+🧪 Model Testing
+Evidence Checklist
+Test	Question	Evidence to confirm
+🔵 Model A	`Give a two-sentence summary of the current global risk level.`	Temperature `0`, seed `42` and matching repeated output
+🟠 Model B	Use the same Model A question twice	Temperature `0.8`, changing seeds and varied wording
+🟣 Model C — Risk	`What is causing the current global risk level?`	Selected skill: `Global Risk Analyst`
+🟣 Model C — Cyber	`Which critical CVE requires urgent investigation?`	Selected skill: `Cyber Threat Analyst`
+🟣 Model C — Disaster	`Summarise the most significant earthquakes and volcanoes currently shown.`	Selected skill: `Disaster Analyst`
+Verified Model C Evidence
+Verification	Result
+R3 router	Tencent R3-Skill
+Global-risk routing	`Global Risk Analyst` selected
+Cyber routing	`Cyber Threat Analyst` selected
+Local answer model	`llama3.1`
+R3 processing device	`cuda:0`
+Cloud AI dependency	None
+> [!TIP]
+> The dashboard feeds can change between requests. Test deterministic behaviour using the same question and an unchanged dashboard snapshot.
+---
+🔒 Privacy and Local Processing
+Control	Implementation
+Local inference	Ollama and Tencent R3-Skill run on the same computer
+No cloud AI	No external AI API is used
+Input reduction	Large rendering data is removed before inference
+Blocked properties	Geometry, materials, matrices and private rendering keys
+Bounded data	Large arrays and strings are limited before model processing
+---
+🛠️ Troubleshooting
+<details>
+<summary><strong>The dashboard does not load</strong></summary>
+```powershell
 npm run dev
-Open:
-
-http://localhost:5173
-API Routes
-Node Backend
-GET /api/health — checks the Node AI backend and lists available modes.
-
-POST /api/assistant — processes a dashboard question using Model A, B or C.
-
-Tencent R3-Skill Service
-GET /api/health — confirms the R3 models, device and number of skills.
-
-POST /api/route — returns the selected analyst skill and ranked candidates.
-
-Testing the Models
-Model A Test
-Select Model A - Deterministic.
-
-Enter the following question:
-
-Give a two-sentence summary of the current global risk level.
-Run it twice while the dashboard snapshot remains unchanged.
-
-Confirm temperature 0, seed 42 and matching output.
-
-Model B Test
-Select Model B - Probabilistic.
-
-Enter the same question used for Model A.
-
-Run it twice.
-
-Confirm temperature 0.8, changing seeds and differences in wording.
-
-Model C Tests
-Global-risk routing:
-
-What is causing the current global risk level?
-Expected selected skill: Global Risk Analyst
-
-Cyber-threat routing:
-
-Which critical CVE requires urgent investigation?
-Expected selected skill: Cyber Threat Analyst
-
-Disaster routing:
-
-Summarise the most significant earthquakes and volcanoes currently shown.
-Expected selected skill: Disaster Analyst
-
-Verified Local Results
-The dashboard loads successfully at port 5173 and displays live-style global events.
-
-The Node backend exposes deterministic, probabilistic and R3 modes.
-
-Model A returns dashboard-aware deterministic responses.
-
-Model B uses sampling and a changing random seed.
-
-Model C successfully selected Global Risk Analyst for a global-risk question.
-
-Model C successfully selected Cyber Threat Analyst for a critical-CVE question.
-
-Model C reported its device as cuda:0 during testing.
-
-Because dashboard feeds can change between requests, deterministic comparisons should use the same question and an unchanged dashboard snapshot.
-
-Privacy and Local Processing
-All AI inference runs locally.
-
-No external cloud AI service is called.
-
-Ollama runs on the local machine.
-
-Tencent R3-Skill runs through a local Python service.
-
-The dashboard snapshot is filtered before inference.
-
-Three.js geometry, materials, matrices and private rendering properties are removed from the model input.
-
-Troubleshooting
-Dashboard does not load
-npm run dev
-Then open http://localhost:5173.
-
-The interface says it cannot connect to the local AI assistant
+```
+Open `http://localhost:5173`.
+</details>
+<details>
+<summary><strong>The dashboard cannot connect to the AI assistant</strong></summary>
+```powershell
 node .\server\index.js
-Confirm http://localhost:5050/api/health returns JSON.
-
-Model C is unavailable
+```
+Confirm that `http://localhost:5050/api/health` returns JSON.
+</details>
+<details>
+<summary><strong>Model C is unavailable</strong></summary>
+```powershell
 & ".\model-c-r3\.venv\Scripts\python.exe" ".\model-c-r3\R3-Skill\r3_service.py"
-Confirm http://127.0.0.1:6060/api/health returns JSON.
-
-Ollama does not respond
+```
+Confirm that `http://127.0.0.1:6060/api/health` returns JSON.
+</details>
+<details>
+<summary><strong>Ollama does not respond</strong></summary>
+```powershell
 ollama serve
-Then confirm the model exists:
-
 ollama list
-Backend page shows Cannot GET /
-Use the health endpoint instead:
-
+```
+Confirm that `llama3.1:latest` appears in the model list.
+</details>
+<details>
+<summary><strong>The backend displays Cannot GET /</strong></summary>
+Use the correct health endpoint:
+```text
 http://localhost:5050/api/health
-Final Validation
-Run the production build before submission:
-
+```
+</details>
+---
+📋 Final Validation
+Build Check
+```powershell
 npm run build
-Check the files that will be committed:
-
+```
+Git Check
+```powershell
 git status
-Commit and push the completed work:
-
+```
+Commit and Push
+```powershell
 git add .
 git commit -m "Complete local AI models for ICE Task 3"
 git push origin master
-Attribution
-The dashboard is based on the open-source Global Situation Dashboard created by The-ProfessorGG.
-
-The local AI extension, deterministic/probabilistic controls, dashboard-data cleaning, Tencent R3-Skill routing service and three-model user interface were added for this assessment.
-
-Tencent R3-Skill remains subject to its original project licence and attribution requirements.
-
-The original dashboard is distributed under the MIT License.
-
-Submission
-Submit the following GitHub repository link:
-
-https://github.com/NikhilSAROOP-21/global-situation-dashboard
-
+```
+> [!WARNING]
+> Do not commit `node_modules`, Python virtual environments, model weights, secrets or large downloaded files.
+---
+🙏 Attribution
+Component	Attribution
+Original dashboard	The-ProfessorGG/global-situation-dashboard
+Student extension	Three-mode local AI interface, Node orchestration and input cleaning
+Local generation	Ollama with Llama 3.1
+Skill routing	Tencent R3-Skill, subject to its original licence
+Original dashboard licence	MIT License
+---
+📤 Submission
 <div align="center">
-
+GitHub Repository
+![Open Repository](https://img.shields.io/badge/Open-ICE_Task_3_Repository-2563EB?style=for-the-badge&logo=github)
+Submission link:  
+https://github.com/NikhilSAROOP-21/global-situation-dashboard
+---
 Prepared for PDAN8412 — Programming for Data Analytics 2.
-
 </div>
