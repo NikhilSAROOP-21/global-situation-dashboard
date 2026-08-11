@@ -374,7 +374,7 @@ The most surprising finding was that the same local Llama 3.1 model could behave
 
 The assessment video demonstrates both models answering the standard question set, explains the relevant code and reflects on the implementation experience.
 
-[![Watch Assessment Video](https://img.shields.io/badge/YouTube-Watch_Assessment_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/REPLACE_WITH_VIDEO_ID)
+[![Watch Assessment Video](https://img.shields.io/badge/YouTube-Watch_Assessment_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/hj9UBzVu9j4)
 
 > [!IMPORTANT]
 > Replace `REPLACE_WITH_VIDEO_ID` with the real YouTube video ID after uploading the final video. The submitted video must be no longer than five minutes.
