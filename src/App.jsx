@@ -1405,7 +1405,8 @@ const askDashboardAssistant = async () => {
     setAssistantMetadata({
       mode: data.mode || assistantMode,
       model: data.model || 'llama3.1',
-      generationOptions: data.generationOptions || {}
+      generationOptions: data.generationOptions || {},
+      r3Routing: data.r3Routing || null
     })
   } catch (error) {
     setAssistantAnswer('Could not connect to local AI assistant.')
@@ -1891,6 +1892,9 @@ const askDashboardAssistant = async () => {
     <option value="probabilistic">
       Model B - Probabilistic
     </option>
+    <option value="r3">
+      Model C - Tencent R3-Skill
+    </option>
   </select>
 
   <div
@@ -1903,7 +1907,9 @@ const askDashboardAssistant = async () => {
   >
     {assistantMode === 'deterministic'
       ? 'Temperature 0 and fixed seed 42. The same input should produce the same output.'
-      : 'Temperature 0.8 with sampling and a changing seed. Repeated outputs may differ.'}
+      : assistantMode === 'probabilistic'
+        ? 'Temperature 0.8 with sampling and a changing seed. Repeated outputs may differ.'
+        : 'Tencent R3-Skill selects the most relevant analyst skill before the local Llama 3.1 model produces the answer.'}
   </div>
 
   <textarea
@@ -1922,7 +1928,9 @@ const askDashboardAssistant = async () => {
       ? 'Thinking...'
       : assistantMode === 'deterministic'
         ? 'Run Model A'
-        : 'Run Model B'}
+        : assistantMode === 'probabilistic'
+          ? 'Run Model B'
+          : 'Run Model C'}
   </button>
 
   {assistantAnswer && (
@@ -1946,7 +1954,9 @@ const askDashboardAssistant = async () => {
         Result mode:{' '}
         {assistantMetadata.mode === 'deterministic'
           ? 'Model A - Deterministic'
-          : 'Model B - Probabilistic'}
+          : assistantMetadata.mode === 'probabilistic'
+            ? 'Model B - Probabilistic'
+            : 'Model C - Tencent R3-Skill'}
       </div>
       <div>Local model: {assistantMetadata.model}</div>
       <div>
@@ -1957,6 +1967,27 @@ const askDashboardAssistant = async () => {
         Seed:{' '}
         {assistantMetadata.generationOptions.seed ?? 'Not returned'}
       </div>
+
+      {assistantMetadata.r3Routing && (
+        <>
+          <div>
+            R3 router: {assistantMetadata.r3Routing.model}
+          </div>
+          <div>
+            Selected skill:{' '}
+            {assistantMetadata.r3Routing.selectedSkill.name}
+          </div>
+          <div>
+            Routing score:{' '}
+            {Number(
+              assistantMetadata.r3Routing.selectedSkill.score
+            ).toFixed(3)}
+          </div>
+          <div>
+            R3 device: {assistantMetadata.r3Routing.device}
+          </div>
+        </>
+      )}
     </div>
   )}
 </div>
